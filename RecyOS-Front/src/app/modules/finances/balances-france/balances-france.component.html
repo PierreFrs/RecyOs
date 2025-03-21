@@ -1,0 +1,114 @@
+<div class="flex flex-col flex-auto min-w-0">
+    <!-- Main -->
+    <div class="flex-auto p-6 sm:p-10">
+        <div class="flex flex-col">
+            <!-- Header -->
+            <div class="flex flex-col sm:flex-row items-start justify-between">
+                <!-- Title -->
+                <div class="text-4xl font-extrabold tracking-tight">Balances Clients Français</div>
+            </div>
+
+            <!-- Filters -->
+            <div class="mt-8" [formGroup]="filterForm">
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                    <mat-form-field>
+                        <mat-label>Client</mat-label>
+                        <input matInput formControlName="clientId" placeholder="Filtrer par client">
+                    </mat-form-field>
+
+                    <mat-form-field>
+                        <mat-label>Société</mat-label>
+                        <mat-select formControlName="societeId">
+                            <mat-option [value]="''">Toutes les sociétés</mat-option>
+                            <mat-option *ngFor="let societe of societes$ | async" 
+                                       [value]="societe.id.toString()">
+                                {{societe.nom}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+
+                    <mat-form-field>
+                        <mat-label>Commercial</mat-label>
+                        <mat-select formControlName="commercialId">
+                            <mat-option [value]="''">Tous les commerciaux</mat-option>
+                            <mat-option *ngFor="let commercial of commerciaux$ | async" 
+                                       [value]="commercial.id.toString()">
+                                {{commercial.firstname}} {{commercial.lastname}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+            </div>
+
+            <!-- Balances list -->
+            <div class="mt-8">
+                <table mat-table [dataSource]="balances$" matSort class="w-full">
+                    <!-- Client Column -->
+                    <ng-container matColumnDef="etablissementClient.nom">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Client</th>
+                        <td mat-cell *matCellDef="let balance">{{balance.etablissementClient.nom}}</td>
+                    </ng-container>
+
+                    <!-- Société Column -->
+                    <ng-container matColumnDef="societe.nom">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Société</th>
+                        <td mat-cell *matCellDef="let balance">{{balance.societe.nom}}</td>
+                    </ng-container>
+
+                    <!-- Montant Column -->
+                    <ng-container matColumnDef="montant">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Montant</th>
+                        <td mat-cell *matCellDef="let balance" 
+                            class="text-right"
+                            [ngClass]="{'text-red-600': isOverLimit(balance)}">
+                            {{balance.montant | creditAmount}}
+                        </td>
+                    </ng-container>
+
+                    <!-- Encours Max Column -->
+                    <ng-container matColumnDef="encoursMax">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Encours Max</th>
+                        <td mat-cell *matCellDef="let balance" class="text-right">
+                            {{balance.etablissementClient.encoursMax | currency:'EUR'}}
+                        </td>
+                    </ng-container>
+
+                    <!-- Date Column -->
+                    <ng-container matColumnDef="dateRecuperationBalance">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Date</th>
+                        <td mat-cell *matCellDef="let balance">{{balance.dateRecuperationBalance | date:'dd/MM/yyyy HH:mm'}}</td>
+                    </ng-container>
+
+                    <!-- Commercial Column -->
+                    <ng-container matColumnDef="commercial">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Commercial</th>
+                        <td mat-cell *matCellDef="let balance">
+                            <ng-container *ngIf="getCommercial(balance.etablissementClient.commercialId) as commercial">
+                                {{commercial.firstname}} {{commercial.lastname}}
+                            </ng-container>
+                        </td>
+                    </ng-container>
+
+                    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                </table>
+
+                <!-- Total Row -->
+                <div class="flex justify-end items-center p-4 border-t">
+                    <div class="font-semibold mr-4">Total :</div>
+                    <div [ngClass]="{'text-red-600': (sommeTotal$ | async) > 0}">
+                        {{sommeTotal$ | async | creditAmount}}
+                    </div>
+                </div>
+
+                <!-- Pagination -->
+                <mat-paginator
+                    [length]="(pagination$ | async)?.length"
+                    [pageSize]="10"
+                    [pageSizeOptions]="[5, 10, 25, 100]"
+                    showFirstLastButtons>
+                </mat-paginator>
+            </div>
+        </div>
+    </div>
+</div>

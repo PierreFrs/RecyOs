@@ -1,0 +1,29 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# 
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RecyOs", "RecyOs\RecyOs.csproj", "{2FC46EA7-94DF-4119-8545-92833C175F1A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RecyOsTests", "RecyOsTests\RecyOsTests.csproj", "{253B4047-0D8A-4677-9122-0750556DEE0B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RecyOs.OdooImporter", "RecyOs.OdooImporter\RecyOs.OdooImporter.csproj", "{EA454FB5-A93B-4958-93B4-4A2132EEFE13}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2FC46EA7-94DF-4119-8545-92833C175F1A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2FC46EA7-94DF-4119-8545-92833C175F1A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2FC46EA7-94DF-4119-8545-92833C175F1A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2FC46EA7-94DF-4119-8545-92833C175F1A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{253B4047-0D8A-4677-9122-0750556DEE0B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{253B4047-0D8A-4677-9122-0750556DEE0B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{253B4047-0D8A-4677-9122-0750556DEE0B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{253B4047-0D8A-4677-9122-0750556DEE0B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EA454FB5-A93B-4958-93B4-4A2132EEFE13}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EA454FB5-A93B-4958-93B4-4A2132EEFE13}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EA454FB5-A93B-4958-93B4-4A2132EEFE13}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EA454FB5-A93B-4958-93B4-4A2132EEFE13}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

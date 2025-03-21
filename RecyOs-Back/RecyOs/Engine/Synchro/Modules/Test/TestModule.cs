@@ -1,0 +1,25 @@
+//  TestModule.cs -
+// ======================================================================0
+// Crée par : Benjamin
+// Fichier Crée le : 19/05/2023
+// Fichier Modifié le : 12/09/2023
+// Code développé pour le projet : RecyOs
+
+using AutoMapper;
+using Microsoft.Extensions.Logging;
+using RecyOs.Engine.Interfaces;
+using RecyOs.Engine.Modules.Odoo;
+using RecyOs.OdooDB.DTO;
+using RecyOs.ORM.DTO.hub;
+
+namespace RecyOs.Engine.Modules;
+
+public class TestModule : BaseModule<EtablissementClientDto, ResPartnerDto>
+{
+    public TestModule(IOdooClientService dataService, 
+        IEngineEtablissementClientService hubService, IMapper mapper, IEngineSyncStatusService engineSyncStatusService,
+        ILogger<TestModule> logger)
+    :base("TestModule",dataService, hubService, mapper, engineSyncStatusService, logger )
+    {
+    }
+}

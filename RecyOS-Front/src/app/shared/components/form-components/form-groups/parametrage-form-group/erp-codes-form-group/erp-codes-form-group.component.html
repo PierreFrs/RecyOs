@@ -1,0 +1,96 @@
+<div [formGroup]="erpCodesFormGroup">
+    <!-- Colonne 3 -->
+    <div class="flex flex-col w-full sm:pl-1">
+        <!-- Code tiers MKGT -->
+        <div class="flex h-24 items-center">
+            <app-input-add-field
+                class="w-full h-24"
+                label="Code tier MKGT"
+                formControlName="codeMkgt"
+                [type]="'text'"
+                [control]="codeMkgtControl"
+                (addButtonClick)="createMKGT(this.selectedEntity)"
+                [isReadonly]="readonlyConditions.codeMkgt"
+                [selectedEntityForm]="selectedEntityForm"
+                [selectedEntity]="selectedEntity"
+                [canCreateCode]="canCreateMkgt"
+                data-cy="code-mkgt"
+            >
+            </app-input-add-field>
+        </div>
+        <!-- Code Id Odoo -->
+        <div class="flex h-24 items-center">
+            <app-input-add-field
+                class="w-full h-24"
+                label="Code Id Odoo"
+                formControlName="idOdoo"
+                [type]="'text'"
+                [control]="idOdooControl"
+                (addButtonClick)="createOdooEntity(this.selectedEntity)"
+                [isReadonly]="readonlyConditions.idOdoo"
+                [selectedEntityForm]="selectedEntityForm"
+                [selectedEntity]="selectedEntity"
+                [canCreateCode]="canCreateOdoo"
+                data-cy="code-odoo"
+            >
+            </app-input-add-field>
+        </div>
+        <!-- Code GPI -->
+        <div
+            *ngIf="strategyObject.status !== 'particulier'"
+            class="flex h-24 items-center"
+        >
+            <app-input-add-field
+                *ngIf="strategyObject.type === 'client'"
+                class="w-full h-24"
+                label="Code GPI"
+                formControlName="codeGpi"
+                [type]="'text'"
+                [control]="codeGpiControl"
+                (addButtonClick)="createGpi(this.selectedEntity)"
+                [isReadonly]="readonlyConditions.codeGpi"
+                [selectedEntityForm]="selectedEntityForm"
+                [selectedEntity]="selectedEntity"
+                [canCreateCode]="canCreateGpi"
+                data-cy="code-gpi"
+            >
+            </app-input-add-field>
+            <app-input-add-field
+                *ngIf="strategyObject.type === 'supplier'"
+                class="w-full h-24"
+                label="Code fournisseur GPI"
+                formControlName="frnCodeGpi"
+                [type]="'text'"
+                [control]="frnCodeGpiControl"
+                (addButtonClick)="createGpi(this.selectedEntity)"
+                [isReadonly]="readonlyConditions.frnCodeGpi"
+                [selectedEntityForm]="selectedEntityForm"
+                [selectedEntity]="selectedEntity"
+                [canCreateCode]="canCreateGpi"
+                data-cy="code-gpi-frn"
+            >
+            </app-input-add-field>
+        </div>
+
+        <!-- Id DashDoc -->
+        <div class="flex h-24 items-center">
+            <app-input-add-field
+                *ngIf="
+                    strategyObject.type === 'client' &&
+                    strategyObject.status !== 'particulier'
+                "
+                class="w-full h-24"
+                label="Identifiant DashDoc"
+                formControlName="idDashdoc"
+                [type]="'text'"
+                [control]="idDashdocControl"
+                (addButtonClick)="createDashdoc(this.selectedEntity)"
+                [isReadonly]="readonlyConditions.idDashdoc"
+                [selectedEntityForm]="selectedEntityForm"
+                [selectedEntity]="selectedEntity"
+                [canCreateCode]="canCreateDashdoc"
+            >
+            </app-input-add-field>
+        </div>
+    </div>
+</div>

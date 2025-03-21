@@ -1,0 +1,15 @@
+.societes-grid {
+    grid-template-columns: 48px auto 120px 120px;
+
+    @screen sm {
+        grid-template-columns: 48px auto 120px 120px;
+    }
+
+    @screen md {
+        grid-template-columns: 48px 300px 120px 120px;
+    }
+
+    @screen lg {
+        grid-template-columns: 48px 300px 120px 120px;
+    }
+} 

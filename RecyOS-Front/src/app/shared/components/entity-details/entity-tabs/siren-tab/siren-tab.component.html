@@ -1,0 +1,204 @@
+<ng-container
+    *ngIf="hasSirenData!==false; else noSiren"
+>
+<div
+    class="flex flex-col sm:flex-row pl-8"
+    data-cy="siren-component"
+>
+    <div class="flex flex-auto flex-wrap">
+
+        <div class="flex flex-col w-full sm:pl-1">
+            <div class="mt-3 text-4xl font-bold truncate">{{selectedEntrepriseBase?.denomination}}</div>
+            <div class="flex sm:items-start">
+                <div class="flex flex-col lg:w-1/4 sm:pl-1">
+                    <!-- SIREN -->
+                    <div class="flex flex-row">
+                        <div class="flex flex-col lg:w-1/8">
+                            <mat-icon [svgIcon]="'heroicons_outline:office-building'"></mat-icon>
+                        </div>
+                        <div class="flex flex-col lg:w-7/8">
+                            <div class="ml-6 leading-6">{{selectedEntrepriseBase?.sirenFormate}}
+                                <ng-container *ngIf="!selectedEntrepriseBase?.entrepriseCessee">
+                                    <mat-icon
+                                        class="icon-size-5 text-green-600"
+                                        [svgIcon]="'heroicons_solid:badge-check'"
+                                        [matTooltip]="'Entreprise Active'"></mat-icon>
+
+                                </ng-container>
+                                <ng-container *ngIf="selectedEntrepriseBase?.entrepriseCessee">
+                                    <mat-icon
+                                        class="icon-size-5 text-red-600"
+                                        [svgIcon]="'heroicons_solid:x-circle'"
+                                        [matTooltip]="'Entreprise Cessée'"></mat-icon>
+                                </ng-container>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- VAT -->
+                    <div class="flex flex-row">
+                        <div class="flex flex-col lg:w-1/8">
+                            <mat-icon [svgIcon]="'heroicons_outline:identification'"></mat-icon>
+                        </div>
+                        <div class="flex flex-col lg:w-7/8">
+                            <div class="ml-6 leading-6">{{selectedEntrepriseBase?.numeroTvaIntracommunautaire}}</div>
+                        </div>
+                    </div>
+                    <!-- SIRET -->
+                    <div class="flex flex-row">
+                        <div class="flex flex-col lg:w-1/8">
+                            <mat-icon [svgIcon]="'mat_solid:business'"></mat-icon>
+                        </div>
+                        <div class="flex flex-col lg:w-7/8">
+                            <div class="ml-6 leading-6">{{selectedEtablissementFiche?.siretFormate}}
+                                <ng-container *ngIf="!selectedEtablissementFiche?.etablissementCesse">
+                                    <mat-icon
+                                        class="icon-size-5 text-green-600"
+                                        [svgIcon]="'heroicons_solid:badge-check'"
+                                        [matTooltip]="'Etablissement Actif'"></mat-icon>
+
+                                </ng-container>
+                                <ng-container *ngIf="selectedEtablissementFiche?.etablissementCesse">
+                                    <mat-icon
+                                        class="icon-size-5 text-red-600"
+                                        [svgIcon]="'heroicons_solid:x-circle'"
+                                        [matTooltip]="'Etablissement Cessé'"></mat-icon>
+                                </ng-container>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- APE -->
+                    <div class="flex flex-row">
+                        <div class="flex flex-col lg:w-1/8">
+                            <mat-icon [svgIcon]="'heroicons_outline:briefcase'"></mat-icon>
+                        </div>
+                        <div class="flex flex-col lg:w-7/8">
+                            <div class="ml-6 leading-6">{{selectedEtablissementFiche?.codeNaf}} {{selectedEtablissementFiche?.libelleCodeNaf}}</div>
+                        </div>
+                    </div>
+                    <!-- Forme juridique -->
+                    <div class="flex flex-row">
+                        <div class="flex flex-col lg:w-1/8">
+                            <mat-icon [svgIcon]="'heroicons_outline:document-text'"
+                                      [matTooltip]="'Forme juridique'">></mat-icon>
+                        </div>
+                        <div class="flex flex-col lg:w-7/8">
+                            <div class="ml-6 leading-6">{{selectedEntrepriseBase?.formeJuridique}}</div>
+                        </div>
+                    </div>
+                    <!-- RCS -->
+                    <div class="flex flex-row" *ngIf="selectedEntrepriseBase?.numeroRcs">
+                        <div class="flex flex-col lg:w-1/8">
+                            <mat-icon [svgIcon]="'heroicons_outline:document-text'"
+                                      [matTooltip]="'RCS'">></mat-icon>
+                        </div>
+                        <div class="flex flex-col lg:w-7/8">
+                            <div class="ml-6 leading-6">{{selectedEntrepriseBase?.numeroRcs}}</div>
+                        </div>
+                    </div>
+                    <!-- Capital -->
+                    <div class="flex flex-row" *ngIf="selectedEntrepriseBase?.capital">
+                        <div class="flex flex-col lg:w-1/8">
+                            <mat-icon [svgIcon]="'mat_solid:euro'"
+                                      [matTooltip]="'Capital'">></mat-icon>
+                        </div>
+                        <div class="flex flex-col lg:w-7/8">
+                            <div class="ml-6 leading-6">{{selectedEntrepriseBase?.capital | number:'1.0-0'}} €</div>
+                        </div>
+                    </div>
+                    <!-- Effectif -->
+                    <div class="flex flex-row" *ngIf="selectedEntrepriseBase?.effectif">
+                        <div class="flex flex-col lg:w-1/8">
+                            <mat-icon [svgIcon]="'mat_solid:groups'"
+                                      [matTooltip]="'Effectif'">></mat-icon>
+                        </div>
+                        <div class="flex flex-col lg:w-7/8">
+                            <div class="ml-6 leading-6">{{selectedEntrepriseBase?.effectif}}</div>
+                        </div>
+                    </div>
+                    <!-- Date de création -->
+                    <div class="flex flex-row" *ngIf="selectedEntrepriseBase?.dateCreation">
+                        <div class="flex flex-col lg:w-1/8">
+                            <mat-icon [svgIcon]="'heroicons_outline:calendar'"
+                                      [matTooltip]="'Date de création'">></mat-icon>
+                        </div>
+                        <div class="flex flex-col lg:w-7/8">
+                            <div class="ml-6 leading-6">{{(selectedEntrepriseBase?.dateCreation | stringToDate) | date:'dd/MM/yyyy'}}</div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="flex flex-col lg:w-1/4 sm:pr-1">
+                    <div class="flex flex-row">
+                        <div class="flex flex-col lg:w-1/8">
+                            <mat-icon [svgIcon]="'heroicons_outline:location-marker'"
+                                      [matTooltip]="'Adresse établissement'">></mat-icon>
+                        </div>
+                        <div class="flex flex-col lg:w-7/8">
+                            <div class="ml-6 leading-6">{{selectedEtablissementFiche?.adresseLigne1}}</div>
+                        </div>
+                    </div>
+                    <div class="flex flex-row" *ngIf="selectedEtablissementFiche?.adresseLigne2">
+                        <div class="flex flex-col lg:w-1/8">
+                            <mat-icon></mat-icon>
+                        </div>
+                        <div class="flex flex-col lg:w-7/8">
+                            <div class="ml-6 leading-6">{{selectedEtablissementFiche?.adresseLigne2}}</div>
+                        </div>
+                    </div>
+                    <div class="flex flex-row">
+                        <div class="flex flex-col lg:w-1/8">
+                            <mat-icon></mat-icon>
+                        </div>
+                        <div class="flex flex-col lg:w-7/8">
+                            <div class="ml-6 leading-6">{{selectedEtablissementFiche?.codePostal}} {{selectedEtablissementFiche?.ville}}</div>
+                        </div>
+                    </div>
+                    <div class="flex flex-row">
+                        <div class="flex flex-col lg:w-1/8">
+                            <mat-icon></mat-icon>
+                        </div>
+                        <div class="flex flex-col lg:w-7/8">
+                            <div class="ml-6 leading-6">{{selectedEtablissementFiche?.pays}}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex flex-col lg:w-1/2 sm:pr-1">
+                    <!-- Activité -->
+                    <div class="flex flex-row">
+                        <div class="flex flex-col lg:w-1/8">
+                            <mat-icon [svgIcon]="'heroicons_outline:briefcase'"
+                                      [matTooltip]="'Activité'">></mat-icon>
+                        </div>
+                        <div class="flex flex-col lg:w-7/8">
+                            <div class="ml-6 leading-6">{{selectedEntrepriseBase?.domaineActivite}}</div>
+                        </div>
+                    </div>
+                    <!-- Colone commentaires -->
+                    <div class="flex flex-row">
+                        <div class="flex flex-row">
+                            <div class="flex flex-col lg:w-1/8">
+                                <mat-icon [svgIcon]="'heroicons_outline:annotation'"
+                                          [matTooltip]="'Activité principale déclarée'"></mat-icon>
+                            </div>
+                            <div class="flex flex-col lg:w-7/8">
+                                <div class="ml-6 leading-6">{{selectedEntrepriseBase?.objetSocial}}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="flex sm:items-center">
+
+            </div>
+        </div>
+    </div>
+</div>
+</ng-container>
+
+<ng-template #noSiren>
+    <div class="flex flex-col items-center justify-center h-full">
+        <mat-icon [svgIcon]="'heroicons_outline:search'" class="text-6xl"></mat-icon>
+        <div class="text-2xl">Aucune donnée dans la base SIREN disponnible</div>
+    </div>
+</ng-template>

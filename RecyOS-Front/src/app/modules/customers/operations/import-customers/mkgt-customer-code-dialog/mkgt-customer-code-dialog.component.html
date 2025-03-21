@@ -1,0 +1,36 @@
+<h1 class="text-4xl font-extrabold tracking-tight" mat-dialog-title>Importer un client depuis MKGT</h1>
+<div mat-dialog-content>
+    <mat-form-field class="w-full" appearance="fill">
+        <input  [autocomplete]="'off'"
+                [placeholder]="'Code MKGT client'"
+                [formControl]="importCliControl"
+                matInput>
+        <mat-error *ngIf="importCliControl.hasError('required')">
+            Le code client est requis pour importer
+        </mat-error>
+        <mat-error *ngIf="importCliControl.hasError('customerNotFound')">
+            Le code MKGT est introuvable dans les fiches facturation.
+        </mat-error>
+        <mat-error *ngIf="importCliControl.hasError('otherError')">
+            Erreur de connexion à MKGT.
+        </mat-error>
+        <mat-error *ngIf="importCliControl.hasError('importError')">
+            Cette fiche ne respecte pas les pré-requis d'importation.
+        </mat-error>
+        <mat-error *ngIf="importCliControl.hasError('notAuthorised')">
+            Vous n'êtes pas autorisé à importer ce client.
+        </mat-error>
+        <mat-error *ngIf="importCliControl.hasError('codeMkgtAlreadyExists')">
+            Cette fiche existe déja dans RecyOs.
+        </mat-error>
+        <mat-hint *ngIf="importCliControl.valid" style="color: green;">
+            Le code client est valide.
+        </mat-hint>
+    </mat-form-field>
+</div>
+<div mat-dialog-actions class="flex flex-row items-center justify-between">
+    <div class="flex items-center">
+        <button mat-button (click)="onCancel()">Annuler</button>
+    </div>
+    <button mat-flat-button (click)="onCreate()" color="primary" [disabled]="!isValid">Créer</button>
+</div>

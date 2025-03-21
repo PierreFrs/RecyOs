@@ -1,0 +1,10 @@
+<div mat-dialog-content>
+    <p>
+        Êtes-vous sûr de vouloir supprimer le groupe
+        {{ data.groupName }} ?
+    </p>
+</div>
+<mat-dialog-actions class="flex gap-2 justify-end">
+    <button mat-button [mat-dialog-close]="false">Annuler</button>
+    <button mat-button color="warn" [mat-dialog-close]="true">Confirmer</button>
+</mat-dialog-actions>

@@ -1,0 +1,239 @@
+<h1 class="text-4xl font-extrabold tracking-tight" mat-dialog-title>
+    Ajouter un nouveau {{strategyObject.type === 'client' ? 'client': 'fournisseur'}}
+</h1>
+
+<div mat-dialog-content>
+    <mat-form-field class="w-full" appearance="fill" *ngIf="strategyObject.status !== 'particulier'">
+        <input [autocomplete]="'off'"
+               [placeholder]="strategyObject.region === 'france' ? 'SIRET du nouveau fournisseur' : 'TVA Intracommunautaire du nouveau fournisseur'"
+               [formControl]="etablissementControl"
+               matInput
+               data-cy="new-entity-input"
+        >
+        <!-- Existing Validation Errors for SIRET/TVA -->
+        <mat-error *ngIf="etablissementControl.hasError('required')">Le numéro est requis pour créer un nouvel établissement.</mat-error>
+        <mat-error *ngIf="etablissementControl.hasError('invalidSiret') && strategyObject.region === 'france'">Le SIRET doit être un numéro valide à 14 chiffres.</mat-error>
+        <mat-error *ngIf="etablissementControl.hasError('InvalidVatFormat') && strategyObject.region === 'europe'">Le code TVA ne semble pas valide.</mat-error>
+        <mat-error *ngIf="etablissementControl.hasError('FRVat') && strategyObject.region === 'europe'">Les entreprises Françaises ne peuvent pas être ajoutées à la liste des fournisseurs Européens.</mat-error>
+        <mat-hint *ngIf="etablissementControl.valid" style="color: green;">{{ strategyObject.region === 'france' ? 'Le SIRET est valide.' : 'Le TVA est valide.' }}</mat-hint>
+    </mat-form-field>
+
+    <!-- New Fields for Client 'Particulier' -->
+    <div *ngIf="strategyObject.status === 'particulier' && warningState === 'none'">
+        <!-- Titre du client (replaced with app-select-field) -->
+        <app-select-field
+            class="w-full p-1"
+            label="Titre du client"
+            [control]="titreControl"
+            [options]="[
+                { value: 'M.', label: 'M.' },
+                { value: 'Mme', label: 'Mme' }
+            ]"
+            errorMessage="Le titre est requis pour un particulier"
+            data-cy="titre-particulier"
+        >
+        </app-select-field>
+
+        <!-- Nom du client -->
+        <app-input-field
+            class="w-full p-1"
+            label="Nom du client"
+            [type]="'text'"
+            [control]="nomControl"
+            [errorMessages]="{
+                required: 'Le nom est requis pour un particulier',
+                clientExists: 'Un client avec ce nom et prénom existe déjà.'
+            }"
+            data-cy="nom-particulier"
+        >
+        </app-input-field>
+
+        <!-- Prénom du client -->
+        <app-input-field
+            class="w-full p-1"
+            label="Prénom du client"
+            [type]="'text'"
+            [control]="prenomControl"
+            [errorMessages]="{
+                required: 'Le prénom est requis pour un particulier',
+                clientExists: 'Un client avec ce nom et prénom existe déjà.'
+            }"
+            data-cy="prenom-particulier"
+        >
+        </app-input-field>
+
+        <!-- Adresse du client - Ligne 1 -->
+        <app-input-field
+            class="w-full p-1"
+            label="Adresse du client - Ligne 1"
+            [type]="'text'"
+            [control]="adresse1Control"
+            [errorMessages]="{ required: 'L\'adresse est requise pour un particulier' }"
+            data-cy="adresse1-particulier"
+        >
+        </app-input-field>
+
+        <!-- Adresse du client - Ligne 2 -->
+        <app-input-field
+            class="w-full p-1"
+            label="Adresse du client - Ligne 2"
+            [type]="'text'"
+            [control]="adresse2Control"
+            [errorMessages]="{}"
+            data-cy="adresse2-particulier"
+        >
+        </app-input-field>
+
+        <!-- Adresse du client - Ligne 3 -->
+        <app-input-field
+            class="w-full p-1"
+            label="Adresse du client - Ligne 3"
+            [type]="'text'"
+            [control]="adresse3Control"
+            [errorMessages]="{}"
+            data-cy="adresse3-particulier"
+        >
+        </app-input-field>
+
+        <!-- Code Postal -->
+        <app-input-field
+            class="w-full p-1"
+            label="Code Postal"
+            [type]="'text'"
+            [control]="codePostalControl"
+            [errorMessages]="{ required: 'Le code postal est requis pour un particulier' }"
+            data-cy="code-postal-particulier"
+        >
+        </app-input-field>
+
+        <!-- Ville -->
+        <app-input-field
+            class="w-full p-1"
+            label="Ville"
+            [type]="'text'"
+            [control]="villeControl"
+            [errorMessages]="{ required: 'La ville est requise pour un particulier' }"
+            data-cy="ville-particulier"
+        >
+        </app-input-field>
+
+        <!-- Pays -->
+        <app-input-field
+            class="w-full p-1"
+            label="Pays"
+            [type]="'text'"
+            [control]="paysControl"
+            [errorMessages]="{ required: 'Le pays est requis pour un particulier' }"
+            data-cy="pays-particulier"
+        >
+        </app-input-field>
+
+        <!-- E-Mail Facturation -->
+        <app-input-field
+            class="w-full p-1"
+            label="E-Mail Facturation"
+            [type]="'email'"
+            [control]="emailFacturationControl"
+            [errorMessages]="{
+                required: 'L\'adresse Email est requise pour un particulier',
+                email: 'Merci de saisir une adresse Email valide pour un particulier'
+            }"
+            data-cy="email-facturation-particulier"
+        >
+        </app-input-field>
+
+        <!-- Téléphone Facturation -->
+        <app-input-field
+            class="w-full p-1"
+            label="Téléphone Facturation"
+            [type]="'text'"
+            [control]="telephoneFacturationControl"
+            [errorMessages]="{ required: 'Le numéro de téléphone est requis pour un particulier' }"
+            data-cy="telephone-facturation-particulier"
+        >
+        </app-input-field>
+
+        <!-- Portable Facturation -->
+        <app-input-field
+            class="w-full p-1"
+            label="Portable Facturation"
+            [type]="'text'"
+            [control]="portableFacturationControl"
+            [errorMessages]="{}"
+            data-cy="portable-facturation-particulier"
+        >
+        </app-input-field>
+
+        <!-- Contact Alternatif -->
+        <app-input-field
+            class="w-full p-1"
+            label="Contact Alternatif"
+            [type]="'text'"
+            [control]="contactAlternatifControl"
+            [errorMessages]="{}"
+            data-cy="contact-alternatif-particulier"
+        >
+        </app-input-field>
+
+        <!-- E-Mails Alternatifs -->
+        <app-input-field
+            class="w-full p-1"
+            label="E-Mails Alternatifs"
+            [type]="'email'"
+            [control]="emailAlternatifControl"
+            [errorMessages]="{ email: 'Merci de saisir une adresse email valide ou une liste d\'emails séparées par des points-virgules, sans espace.' }"
+            data-cy="emails-alternatifs-particulier"
+        >
+        </app-input-field>
+
+        <!-- Téléphone Alternatif -->
+        <app-input-field
+            class="w-full p-1"
+            label="Téléphone Alternatif"
+            [type]="'text'"
+            [control]="telephoneAlternatifControl"
+            [errorMessages]="{}"
+            data-cy="telephone-alternatif-particulier"
+        >
+        </app-input-field>
+
+        <!-- Portable Alternatif -->
+        <app-input-field
+            class="w-full p-1"
+            label="Portable Alternatif"
+            [type]="'text'"
+            [control]="portableAlternatifControl"
+            [errorMessages]="{}"
+            data-cy="portable-alternatif-particulier"
+        >
+        </app-input-field>
+    </div>
+
+    <div *ngIf="strategyObject.status === 'particulier' && warningState !== 'none'" class="warning-section">
+        <p class="font-semibold mt-2">{{ warningMessage }}</p>
+    </div>
+</div>
+
+<div mat-dialog-actions class="flex flex-row items-center justify-between">
+    <ng-container *ngIf="warningState === 'none'">
+        <button mat-button (click)="onCancel()">Annuler</button>
+        <button mat-flat-button color="primary" (click)="onCreate()" [disabled]="!isValid" data-cy="create-entity-button">Créer</button>
+    </ng-container>
+
+    <ng-container *ngIf="warningState === 'confirmationDuplicate' ">
+        <button mat-button (click)="cancelCreation()">Annuler</button>
+        <button mat-flat-button color="warn" (click)="continueWithWarning()">Continuer</button>
+    </ng-container>
+
+    <ng-container *ngIf="warningState === 'notFound'">
+        <p class="font-semibold mb-4">{{ warningMessage }}</p>
+        <button mat-flat-button color="warn" (click)="confirmManualCreation()">Créer à la main</button>
+        <button mat-button (click)="cancelCreation()">Annuler</button>
+    </ng-container>
+
+    <ng-container *ngIf="warningState === 'confirmationEmpty'">
+        <p class="font-semibold">{{ warningMessage }}</p>
+        <button mat-button (click)="cancelCreation()">Annuler</button>
+        <button mat-flat-button color="primary" (click)="finalizeManualCreation()">Confirmer</button>
+    </ng-container>
+</div>

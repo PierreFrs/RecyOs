@@ -1,0 +1,22 @@
+<mat-form-field class="w-full py-1">
+    <mat-label>{{ label }}</mat-label>
+    <input
+        matInput
+        [readonly]="isReadonly"
+        [type]="type"
+        [formControl]="control"
+        [attr.placeholder]="label"
+    />
+    <button
+        *ngIf="isButtonVisible"
+        mat-icon-button
+        matSuffix
+        color="warn"
+        (click)="onClick()"
+    >
+        <mat-icon fontIcon="add"></mat-icon>
+    </button>
+    <mat-error *ngIf="control.invalid && control.touched">
+        <span *ngIf="control.errors?.required">{{ errorMessage }}</span>
+    </mat-error>
+</mat-form-field>

@@ -1,0 +1,37 @@
+# Étape 1 : Build
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+WORKDIR /src
+
+# Copier les fichiers projet
+COPY ./RecyOs/RecyOs.csproj RecyOs/
+COPY ./RecyOs.OdooImporter/RecyOs.OdooImporter.csproj RecyOs.OdooImporter/
+
+# Restaurer les dépendances pour les deux projets
+RUN dotnet restore "RecyOs/RecyOs.csproj"
+RUN dotnet restore "RecyOs.OdooImporter/RecyOs.OdooImporter.csproj"
+
+# Copier tout le code source
+COPY . .
+
+# Supprimer les fichiers appsettings.json pour éviter les conflits
+RUN rm -f /src/RecyOs/appsettings.json
+RUN rm -f /src/RecyOs.OdooImporter/appsettings.json
+
+# Compiler RecyOs en premier
+RUN dotnet build "RecyOs/RecyOs.csproj" -c Release -o /app/build/RecyOs
+
+# Compiler OdooImporter avec la dépendance à RecyOs
+RUN dotnet build "RecyOs.OdooImporter/RecyOs.OdooImporter.csproj" -c Release -o /app/build/RecyOs.OdooImporter
+
+# Publier l’exécutable final
+RUN dotnet publish "RecyOs.OdooImporter/RecyOs.OdooImporter.csproj" -c Release -o /app/publish
+
+# Étape 2 : Exécution
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
+WORKDIR /app
+
+# Copier l'application publiée depuis l'étape build
+COPY --from=build /app/publish .
+
+# Définir le point d'entrée
+ENTRYPOINT ["dotnet", "RecyOs.OdooImporter.dll"]

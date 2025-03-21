@@ -1,0 +1,32 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+echo "Do you want to skip Cypress tests before push? (Y/n)"
+read -r skip_tests
+
+if [ "$skip_tests" = "Y" ] || [ "$skip_tests" = "y" ]; then
+  echo "Skipping Cypress tests. Proceeding with push..."
+  exit 0
+fi
+
+echo "Running Cypress tests before push..."
+
+# Run Cypress tests
+npm run cypress:run
+
+# Check if Cypress tests passed
+if [ $? -ne 0 ]; then
+  echo "Cypress tests failed."
+
+  echo "Do you want to push anyway? (Y/n)"
+  read -r proceed_push
+
+  if [ "$proceed_push" != "Y" ] && [ "$proceed_push" != "y" ]; then
+    echo "Push aborted due to failed tests."
+    exit 1
+  fi
+
+  echo "Proceeding with push despite failed tests."
+else
+  echo "Cypress tests passed. Proceeding with push."
+fi

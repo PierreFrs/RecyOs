@@ -1,0 +1,23 @@
+<div class="w-full max-w-3xl">
+    <!-- Form -->
+    <form [formGroup]="generalForm">
+    <!-- Section -->
+    <div class="w-full">
+        <div class="text-xl">Paramètres Généraux</div>
+        <div class="text-secondary">Gestion des paramètres généraux de l'application RecyOs</div>
+    </div>
+    <div class="grid sm:grid-cols-4 gap-6 w-full mt-8">
+  
+            <div class="sm:col-span-4" *ngFor="let param of parameters">
+                <app-parameter-control [parameter]="param"></app-parameter-control>
+            </div>
+    </div>
+    <!-- Divider -->
+    <div class="my-10 border-t"></div>
+    <div class="w-full">
+        <div class="text-xl">Allianz TRADE</div>
+        <div class="text-secondary">Gestion des paramètres de l'assureur Allianz TRADE</div>
+    </div>
+    <button type="submit">Sauvegarder</button>
+    </form>
+</div> 

@@ -1,0 +1,91 @@
+{
+  "ConnectionStrings": {
+    "WebApiDatabase": "",
+    "MkgtDatabase": ""
+  },
+
+  "Logging": {
+    "LogLevel": {
+      "Default": "Warning",
+      "RecyOs": "Trace",
+      "Microsoft.AspNetCore": "Warning",
+      "Microsoft.AspNetCore.Mvc": "Warning",
+      "Microsoft.AspNetCore.Mvc.Infrastructure": "Warning"
+    }
+  },
+
+  "AllowedHosts": "*",
+
+  "JwtOptions": {
+    "Issuer": "issuer_sample",
+    "Audience": "audience_sample",
+    "AccessSecret": "",
+    "RefreshSecret": "",
+    "AccessExpire": "120",
+    "RefreshExpire": "43200"
+  },
+
+  "Pappers": {
+    "ApiKey": ""
+  },
+
+  "Vatlayer": {
+    "ApiKey": ""
+  },
+
+  "engine": {
+    "enabled": true,
+    "delay": 15,
+    "writeSync": false,
+  },
+
+  "Kestrel": {
+    "Certificates": {
+      "Default": {
+        "Path": "PFX file",
+        "Password": ""
+      }
+    }
+  },
+
+  "Odoo": {
+   "Url": "https://sipco.odoo.com",
+   "Db": "recyos",
+   "Username": "b.rollin@recygroup.fr",
+   "Password": "Token"
+  },
+
+  "HubSpot": {
+    "ApiKey": "",
+    "EndPoint": ""
+  },
+    
+  "Dashdoc": {
+    "Token": "",
+    "EndPoint": ""
+  },
+
+  "FileValidation": {
+    "AllowedExtensions": ".pdf",
+    "FileSizeLimit": 20971520,
+    "MimeType": "application/pdf"
+  },
+
+  "FileRepository": {
+      "UploadsFolder": ".\\Uploads",
+      "PdfFolder": ".\\PDF"
+  },"Dashdoc": {
+    "Token": "44f480d4aab023fcd670346dbdebc4b465207957",
+    "EndPoint": "https://sandbox.dashdoc.eu/api/v4/"
+  },
+
+  "CoverPolicies": {
+    "NDCoverFrance": {
+      "PrimaryPolicyNumber": "",
+      "PolicyName": "",
+      "PolicyType": "",
+      "CustomerReference": "",
+      "CoverAmount": 10000
+    }
+  }
+}

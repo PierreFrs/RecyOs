@@ -1,0 +1,54 @@
+    <h1 mat-dialog-title class="text-xl font-bold">Importer un document</h1>
+    <mat-dialog-content class="flex flex-col justify-center">
+        <form [formGroup]="uploadForm" (ngSubmit)="onSubmit()" class="w-full">
+            <mat-form-field  class="w-full mb-4">
+                <mat-select
+                    formControlName="type"
+                    placeholder="Type"
+                    data-cy="type-select-dropdown"
+                >
+                    <mat-option *ngFor="let type of types" [value]="type.id">
+                        {{type.label}}
+                    </mat-option>
+                </mat-select>
+                <mat-error *ngIf="uploadForm.get('type').touched && uploadForm.get('type').invalid">
+                    Veuillez choisir un type de document
+                </mat-error>
+            </mat-form-field>
+
+            <div
+                class="file-input w-full mb-4"
+                data-cy="upload-pdf-button"
+            >
+                <button
+                    mat-raised-button
+                    type="button"
+                    color="primary"
+                    (click)="fileInput.click()"
+                    class="min-w-fit"
+                    *ngIf="!selectedFile"
+                >
+                    <mat-icon>file_upload</mat-icon>
+                    <span>importer un document</span>
+                </button>
+                <input #fileInput type="file" id="fileUpload" name="fileUpload" style="display: none" (change)="onFileChange($event)">
+            </div>
+
+            <div class="file-options flex">
+                <span id="file-label" class="mr-3">{{selectedFile?.name}}</span>
+                <a matTooltip="Recharger" (click)="retryFile()" *ngIf="selectedFile" class="mr-2"><mat-icon color="accent" class="cursor-pointer">refresh</mat-icon></a>
+                <a matTooltip="Annuler" (click)="cancelFile()" *ngIf="selectedFile"><mat-icon color="warn" class="cursor-pointer">cancel</mat-icon></a>
+            </div>
+            <mat-dialog-actions class="flex flex-col justify-center items-center">
+                <button mat-button type='button' (click)="onNoClick()" class="mb-1">Annuler</button>
+                <button
+                    mat-raised-button
+                    color="primary"
+                    type="submit"
+                    [disabled]="uploadForm.invalid"
+                    class="hover:opacity-95"
+                    data-cy="confirm-upload"
+                >Importer le document</button>
+            </mat-dialog-actions>
+        </form>
+    </mat-dialog-content>

@@ -1,0 +1,33 @@
+<div
+    class="flex flex-col lg:flex-row gap-2"
+    [formGroup]="identificationFormGroup"
+>
+    <!-- Name, SKU & etc. -->
+    <div class="flex flex-col w-full">
+        <div formGroupName="addressForm">
+            <app-address-form-group
+                [addressFormGroup]="addressFormGroup"
+                [entityStatus]="entityStatus"
+            ></app-address-form-group>
+        </div>
+        <div
+            *ngIf="
+                strategyObject.status === 'professional' &&
+                strategyObject.type === 'supplier'
+            "
+            formGroupName="bankInfosForm"
+        >
+            <app-bank-infos-form-group
+                [bankInfosFormGroup]="bankInfosFormGroup"
+            ></app-bank-infos-form-group>
+        </div>
+    </div>
+    <div class="w-full" formGroupName="contactsForm">
+        <app-contacts-form-group
+            [contactsFormGroup]="contactsFormGroup"
+            [selectedEntity]="selectedEntity"
+            [entityStatus]="entityStatus"
+            [entityRegion]="entityRegion"
+        ></app-contacts-form-group>
+    </div>
+</div>

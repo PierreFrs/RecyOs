@@ -1,0 +1,35 @@
+<div class="flex flex-col sm:flex-row">
+    <!-- Colonne de gauche -->
+    <div class="flex-1 p-2 sm:p-2">
+        <ng-container *ngIf="loading; else content">
+            <div class="text-center">
+                <mat-spinner></mat-spinner>
+                <p>Chargement des balances...</p>
+            </div>
+        </ng-container>
+
+        <ng-template #content>
+            <ng-container *ngIf="!emptyData; else noBalance">
+
+                        <div class="text-2xl font-semibold tracking-tight text-center">Balances comptable</div>
+                
+                        <app-balances-table
+                            [selectedClient]="selectedClient"
+                            data-cy="balances-table"
+                        ></app-balances-table>
+     
+            </ng-container>
+
+            <ng-template #noBalance>
+                <div class="text-4xl font-semibold tracking-tight text-center">Pas de balance pour ce client !
+                </div>
+            </ng-template>
+        </ng-template>
+    </div>
+
+    <!-- Colonne de droite -->
+    <div class="flex-1 p-2 sm:p-2">
+        <div class="text-2xl font-semibold tracking-tight text-center">Non comptabilisé</div>
+    </div>
+</div>
+

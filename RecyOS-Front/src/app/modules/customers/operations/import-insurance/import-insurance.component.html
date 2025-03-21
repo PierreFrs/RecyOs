@@ -1,0 +1,49 @@
+<div class="flex flex-col">
+    <!-- ND Cover Row -->
+    <div class="ndcover-row flex flex-wrap">
+        <!-- Import ND-Cover -->
+        <app-operations-card
+            [cardIcon]="'mat_outline:upload_file'"
+            [title]="'Import ND Cover'"
+            [description]="'Actualise les données de couverture client depuis le fichier Excel'"
+            [actionLabel]="'Importer'"
+            [showFileInput]="true"
+            [actionType]="'import'"
+            (handleFileInput)="handleNDCoverFileInput($event)"
+        ></app-operations-card>
+        <!-- Export ND-Cover France -->
+        <app-operations-card
+            [cardIcon]="'mat_outline:sim_card_download'"
+            [title]="'Export ND Cover France'"
+            [description]="'Télécharge le fichier Excel de couverture client pour la France'"
+            [actionLabel]="'Exporter'"
+            [actionType]="'export'"
+            (actionTriggered)="handleNDCoverFileExportFrance()">
+        </app-operations-card>
+        <!-- Import NDCover Error File -->
+        <app-operations-card
+            [cardIcon]="'mat_outline:upload_file'"
+            [title]="'Import Erreurs ND Cover'"
+            [description]="'Actualise les données de couverture client depuis le fichier Excel contenant les erreurs rapportées par Allianz'"
+            [actionLabel]="'Importer'"
+            [showFileInput]="true"
+            [actionType]="'import'"
+            (handleFileInput)="handleNDCoverErrorFileImport($event)">
+        </app-operations-card>
+        <!-- END Import ND-Cover -->
+    </div>
+    <!-- Allianz Trade Row -->
+    <div class="AT-row">
+        <!-- Import Allianz Trade -->
+        <app-operations-card
+            [cardIcon]="'mat_outline:upload_file'"
+            [title]="'Import Garanties Allianz Trade'"
+            [description]="'Actualise les données de couverture client depuis le fichier Excel'"
+            [actionLabel]="'Importer'"
+            [showFileInput]="true"
+            [actionType]="'import'"
+            (handleFileInput)="handleAlianzTradeFileInput($event)">
+        </app-operations-card>
+        <!-- END Import Allianz Trade -->
+    </div>
+</div>

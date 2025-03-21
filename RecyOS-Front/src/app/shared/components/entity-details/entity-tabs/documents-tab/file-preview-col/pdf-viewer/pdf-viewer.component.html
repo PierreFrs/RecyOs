@@ -1,0 +1,35 @@
+<ngx-extended-pdf-viewer [src]="pdfSrc"
+                         useBrowserLocale="true"
+                         height="60vh"
+                         [showDownloadButton]="false"
+                         [showOpenFileButton]="false"
+                         [showDrawEditor]="false"
+                         [showTextEditor]="false"
+                         [showStampEditor]="false"
+></ngx-extended-pdf-viewer>
+
+<mat-toolbar class="buttons-container mt-3">
+    <span class="flex-grow-1"></span> <!-- This will push the buttons to the right -->
+    <button
+        mat-raised-button color="primary"
+        class="mx-2 hover:opacity-95"
+        (click)="downloadPDF()"
+        [disabled]="!userCanDownloadPdf"
+        data-cy="download-pdf-button"
+    >
+        <mat-icon>download</mat-icon> Télécharger le PDF
+    </button>
+    <button mat-raised-button color="accent" class="mx-2 hover:opacity-95" (click)="openUpdateDialog()" [disabled]="!userCanUpdatePdf">
+        <mat-icon>edit</mat-icon> Mettre à jour le PDF
+    </button>
+    <button
+        mat-raised-button
+        color="warn"
+        class="mx-2 hover:opacity-95"
+        (click)="openDeleteDialog()"
+        [disabled]="!userCanDeletePdf"
+        data-cy="delete-pdf-button"
+    >
+        <mat-icon>delete</mat-icon> Supprimer le PDF
+    </button>
+</mat-toolbar>

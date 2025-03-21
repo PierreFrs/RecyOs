@@ -1,0 +1,15 @@
+<!-- Card #35 -->
+<fuse-card class="flex flex-col items-center w-80 h-80 p-8 filter-info">
+    <div class="flex items-center justify-center p-5 rounded-full bg-primary-100 dark:bg-gray-600">
+        <!-- db icon -->
+        <mat-icon
+            class="icon-size-10 text-primary-500 dark:text-primary-300"
+            [svgIcon]="cardIcon"></mat-icon>
+    </div>
+    <div class="text-2xl font-semibold leading-tight text-center mt-6">{{title}}</div>
+    <div class="text-center text-secondary mt-3">{{description}}</div>
+    <input *ngIf="showFileInput" type="file" #fileInput style="display: none" (change)="onHandleFileInput($event)">
+    <a class="px-6 mt-8" mat-flat-button [color]="'primary'" (click)="onAction()">
+        {{ actionLabel }}
+    </a>
+</fuse-card>

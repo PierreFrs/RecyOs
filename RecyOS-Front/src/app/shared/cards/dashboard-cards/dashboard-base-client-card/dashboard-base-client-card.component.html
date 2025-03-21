@@ -1,0 +1,21 @@
+<div (click)="onDisplayListClick()"
+     (keydown)="onDisplayListClick()"
+     class="flex flex-col flex-auto justify-between p-6 bg-card shadow rounded-2xl overflow-hidden h-60 cursor-pointer hover:brightness-95 max-w-60"
+     [ngClass]="{
+       'translate-y-1 shadow': isPushed,
+       'shadow-md': !isPushed
+     }"
+     data-cy="clients-list-btn"
+>
+    <div class="flex items-start justify-center">
+        <div class="text-lg font-medium tracking-tight leading-6 -mt-2">{{ title }}</div>
+    </div>
+    <div class="flex flex-col items-center mt-2 min-h-30">
+        <div class="{{ numberClass }}">{{ number }}</div>
+        <div class="{{ textClass }}">{{ subtitle }}</div>
+        <div *ngIf="additionalText && additionalNumber" class="flex items-baseline justify-center w-full mt-5 text-secondary">
+            <div class="text-md font-medium truncate">{{ additionalText }}</div>
+            <div class="ml-1.5 text-lg font-semibold">{{ additionalNumber }}</div>
+        </div>
+    </div>
+</div>

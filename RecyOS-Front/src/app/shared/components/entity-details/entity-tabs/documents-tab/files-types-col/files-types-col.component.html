@@ -1,0 +1,27 @@
+<ng-container class="flex flex-col flex-auto w-full py-10">
+    <mat-card class="shadow-none">
+        <mat-card-header>
+            <mat-card-title class="mb-8 mx-6 text-2xl font-extrabold tracking-tight leading-none mat-h2">Types de documents</mat-card-title>
+        </mat-card-header>
+        <mat-card-content *ngIf="uniqueDocumentTypes.length > 0">
+            <mat-selection-list>
+                <mat-list-item (click)="selectType(null)"
+                               [ngClass]="{'bg-blue-300': activeType === null, 'hover:bg-accent-300': activeType !== null}"
+                               class="inventory-grid grid items-center py-3 px-6 cursor-pointer hover:bg-accent-300 rounded-md">
+                    <span class="font-semibold">Tous</span>
+                </mat-list-item>
+                <mat-divider class="border-b-2"></mat-divider>
+                <mat-list-item  *ngFor="let type of uniqueDocumentTypes" (click)="selectType(type.id)"
+                                [ngClass]="{'bg-blue-300': activeType === type.id, 'hover:bg-accent-300': activeType !== type.id}"
+                                class=" inventory-grid grid items-center py-3 px-6 cursor-pointer hover:bg-accent-300 rounded-md">
+                    {{ type.label }}
+                </mat-list-item>
+            </mat-selection-list>
+        </mat-card-content>
+            <mat-card-content *ngIf="uniqueDocumentTypes.length === 0">
+                <p class="mat-body-1">Aucun document n'est disponible pour ce client.</p>
+            </mat-card-content>
+    </mat-card>
+</ng-container>
+
+

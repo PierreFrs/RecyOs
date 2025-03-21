@@ -1,0 +1,268 @@
+trigger:
+  - Develop
+  - release-*
+  - main
+
+pool:
+  name: 'Hosted Agent'
+
+variables:
+  dockerRegistryServiceConnection: 'docker-hub-connection'
+  containerRegistry: 'docker.io'
+  dockerImageName: ''
+  dockerOdooImageName: ''
+  tag: '$(Build.BuildId)'
+  prod: '0.2.3.'
+  ${{ if eq(variables['Build.SourceBranchName'], 'Develop') }}:
+    buildConfiguration: 'Debug'
+    environment: 'Development'
+  ${{ else }}:
+    buildConfiguration: 'Release'  # Valeur par défaut
+    environment: 'Production'
+
+stages:
+
+  - stage: BuildAndPush
+    displayName: 'Build and Push Docker Images'
+    jobs:
+      # Job 1 : Backend
+      - job: Build
+        displayName: 'Build and Push Backend Docker Image'
+        pool:
+          name: 'Hosted Agent'
+        steps:
+          - task: UseDotNet@2
+            inputs:
+              packageType: 'sdk'
+              version: '8.x'
+
+          - script: dotnet restore
+            displayName: 'dotnet restore'
+
+          - task: DotNetCoreCLI@2
+            inputs:
+              command: test
+              projects: '**/*[Tt]ests/*.csproj'
+              arguments: '--configuration $(buildConfiguration)'
+            displayName: 'dotnet test $(buildConfiguration)'
+
+          - script: dotnet publish RecyOs/RecyOs.csproj --configuration $(buildConfiguration) --output publish_output --no-build
+            displayName: 'dotnet publish backend $(buildConfiguration)'
+
+          - task: PublishBuildArtifacts@1
+            inputs:
+              pathtoPublish: 'publish_output'
+              artifactName: 'drop'
+              publishLocation: 'Container'
+
+          - script: |
+              echo "##vso[task.setVariable variable=dockerImageName]recygroup/recyos-backend-$(Build.SourceBranchName)"
+            displayName: 'Set Docker Image Name'
+
+          - task: Docker@2
+            displayName: 'Build Docker image'
+            inputs:
+              command: build
+              repository: $(dockerImageName)
+              Dockerfile: '**/Dockerfile'
+              tags: |
+                $(tag)
+              arguments: '--build-arg BUILD_CONFIGURATION="$(buildConfiguration)" --build-arg BUILD_ENVIRONEMENT="$(environment)"'
+
+          - task: Docker@2
+            displayName: 'Push Docker image'
+            inputs:
+              command: push
+              repository: $(dockerImageName)
+              tags: |
+                $(tag)
+              containerRegistry: $(dockerRegistryServiceConnection)
+
+      # Job 2 : OdooImporter
+      - job: BuildOdooImporter
+        displayName: 'Build and Push OdooImporter Docker Image'
+        pool:
+          name: 'Hosted Agent'
+        steps:
+          - task: UseDotNet@2
+            inputs:
+              packageType: 'sdk'
+              version: '8.x'
+
+          - script: dotnet restore RecyOs.OdooImporter/RecyOs.OdooImporter.csproj
+            displayName: 'dotnet restore OdooImporter'
+
+          - script: dotnet build RecyOs.OdooImporter/RecyOs.OdooImporter.csproj --configuration $(buildConfiguration)
+            displayName: 'dotnet build OdooImporter'
+
+          - script: dotnet publish RecyOs.OdooImporter/RecyOs.OdooImporter.csproj --configuration $(buildConfiguration) --output publish_output_odoo
+            displayName: 'dotnet publish OdooImporter'
+
+          - task: PublishBuildArtifacts@1
+            inputs:
+              pathtoPublish: 'publish_output_odoo'
+              artifactName: 'drop_odoo'
+              publishLocation: 'Container'
+
+          - script: |
+              echo "##vso[task.setVariable variable=dockerOdooImageName]recygroup/recyos-importer-$(Build.SourceBranchName)"
+            displayName: 'Set Docker OdooImporter Image Name'
+
+          - task: Docker@2
+            displayName: 'Build Docker image for OdooImporter'
+            inputs:
+              command: build
+              repository: $(dockerOdooImageName)
+              Dockerfile: 'Dockerfile-OdooImporter'
+              tags: |
+                $(tag)
+              arguments: '--build-arg BUILD_CONFIGURATION="$(buildConfiguration)" --build-arg BUILD_ENVIRONEMENT="$(environment)"'
+
+          - task: Docker@2
+            displayName: 'Push Docker image for OdooImporter'
+            inputs:
+              command: push
+              repository: $(dockerOdooImageName)
+              tags: |
+                $(tag)
+              containerRegistry: $(dockerRegistryServiceConnection)
+ # Étape de déploiement sur le serveur Dev
+  - stage: DeployToDev
+    displayName: 'Deploy to Dev Server'
+    condition: eq(variables['Build.SourceBranchName'], 'Develop')
+    jobs:
+      - job: Deploy
+        pool:
+          name: 'Hosted Agent'
+        steps:
+          - script: |
+              echo "##vso[task.setVariable variable=dockerImageName]recygroup/recyos-backend-$(Build.SourceBranchName)"
+            displayName: 'Set Docker Image Name'
+          - task: SSH@0
+            inputs:
+              sshEndpoint: 'recyos-dev.connection'
+              runOptions: 'commands'
+              commands: |
+                docker pull recygroup/recyos-backend-develop:$(tag)
+                docker stop back-end 2>/dev/null || true
+                docker rm back-end 2>/dev/null || true
+                docker run -d --name back-end --restart unless-stopped --network recyos-network -v /home/recygroup/back-end/dev-recyos.recygroup.local.pfx:/app/dev-recyos.recygroup.local.pfx -v /home/recygroup/back-end/appsettings.json:/app/appsettings.json -v /home/recygroup/back-end/nlog.config:/app/nlog.config -v /home/recygroup/back-end/logs:/app/logs -p 444:443 recygroup/recyos-backend-develop:$(tag)
+                docker system prune -a -f
+            displayName: 'Deploy Backendto Dev Server'
+
+  # Étape de déploiement OdooImporter sur Dev
+  - stage: DeployOdooImporterDev
+    displayName: 'Deploy OdooImporter to Dev Server'
+    condition: eq(variables['Build.SourceBranchName'], 'Develop')
+    jobs:
+      - job: Deploy
+        pool:
+          name: 'Hosted Agent'
+        steps:
+          - task: SSH@0
+            inputs:
+              sshEndpoint: 'recyos-dev.connection'
+              runOptions: 'commands'
+              commands: |
+                docker pull recygroup/recyos-importer-develop:$(tag)
+                docker stop importer 2>/dev/null || true
+                docker rm importer 2>/dev/null || true
+                docker run -d --name importer --restart unless-stopped --network recyos-network -v /home/recygroup/importer/appsettings.json:/app/appsettings.json -v /home/recygroup/importer/nlog.config:/app/nlog.config -v /home/recygroup/importer/logs:/app/logs recygroup/recyos-importer-develop:$(tag)
+                docker system prune -a -f
+            displayName: 'Deploy OdooImporter to Dev Server'
+ # Étape de déploiement sur le serveur Test
+  - stage: DeployToTest
+    displayName: 'Deploy to Test Server'
+    condition: startsWith(variables['Build.SourceBranchName'], 'release')
+    jobs:
+      - job: Deploy
+        pool:
+          name: 'Hosted Agent'
+        steps:
+          - script: |
+              echo "##vso[task.setVariable variable=dockerImageName]recygroup/recyos-backend-$(Build.SourceBranchName)"
+            displayName: 'Set Docker Image Name'
+          - task: SSH@0
+            inputs:
+              sshEndpoint: 'recyos-test.connection'
+              runOptions: 'commands'
+              commands: |
+                docker pull recygroup/recyos-backend-$(Build.SourceBranchName):$(tag)
+                docker stop back-end || true
+                docker rm back-end || true
+                docker run -d --name back-end --restart unless-stopped -v /home/recygroup/back-end/test-recyos.recygroup.local.pfx:/app/test-recyos.recygroup.local.pfx -v /home/recygroup/back-end/appsettings.json:/app/appsettings.json -v /home/recygroup/back-end/nlog.config:/app/nlog.config -v /home/recygroup/back-end/logs:/app/logs -v /home/recygroup/back-end/PDF:/app/PDF -v /home/recygroup/back-end/PDFEurope:/app/PDFEurope -p 444:443 recygroup/recyos-backend-$(Build.SourceBranchName):$(tag)
+                docker system prune -a -f
+            displayName: 'Deploy to Test Server'
+  # Étape de déploiement OdooImporter sur Test
+  - stage: DeployOdooImporterTest
+    displayName: 'Deploy OdooImporter to Test Server'
+    condition: startsWith(variables['Build.SourceBranchName'], 'release')
+    jobs:
+      - job: Deploy
+        pool:
+          name: 'Hosted Agent'
+        steps:
+          - task: SSH@0
+            inputs:
+              sshEndpoint: 'recyos-test.connection'
+              runOptions: 'commands'
+              commands: |
+                docker pull recygroup/recyos-importer-$(Build.SourceBranchName):$(tag)
+                docker stop importer 2>/dev/null || true
+                docker rm importer 2>/dev/null || true
+                docker run -d --name importer --restart unless-stopped -v /home/recygroup/importer/appsettings.json:/app/appsettings.json -v /home/recygroup/importer/nlog.config:/app/nlog.config -v /home/recygroup/importer/logs:/app/logs recygroup/recyos-importer-$(Build.SourceBranchName):$(tag)
+                docker system prune -a -f
+            displayName: 'Deploy OdooImporter to Test Server'
+ # Étape de déploiement sur le serveur Prod
+  - stage: DeployToProd
+    displayName: 'Deploy to Prod Server'
+    condition: startsWith(variables['Build.SourceBranchName'], 'main')
+    jobs:
+      - job: Deploy
+        pool:
+          name: 'Hosted Agent'
+        steps:
+          - script: |
+              echo "##vso[task.setVariable variable=dockerImageName]recygroup/recyos-backend-$(Build.SourceBranchName):$(tag)"
+            displayName: 'Set Docker Image Name'
+          - task: SSH@0
+            inputs:
+              sshEndpoint: 'recyos-prod.connection'
+              runOptions: 'commands'
+              commands: |
+                docker pull recygroup/recyos-backend-$(Build.SourceBranchName):$(tag)
+                docker stop back-end || true
+                docker rm back-end || true
+                docker run -d --name back-end --restart unless-stopped -v /home/recygroup/back-end/recyos.recygroup.local.pfx:/app/recyos.recygroup.local.pfx -v /home/recygroup/back-end/appsettings.json:/app/appsettings.json -v /home/recygroup/back-end/nlog.config:/app/nlog.config -v /home/recygroup/back-end/logs:/app/logs -v /pdfs/fra:/app/PDF -v /pdfs/eur:/app/PDFEurope -p 444:443 recygroup/recyos-backend-$(Build.SourceBranchName):$(tag)
+                docker system prune -a -f
+            displayName: 'Deploy to Prod Server'
+  # Étape de déploiement OdooImporter sur Prod
+  - stage: DeployOdooImporterProd
+    displayName: 'Deploy OdooImporter to Prod Server'
+    condition: startsWith(variables['Build.SourceBranchName'], 'main')
+    jobs:
+      - job: Deploy
+        pool:
+          name: 'Hosted Agent'
+        steps:
+          - task: SSH@0
+            inputs:
+              sshEndpoint: 'recyos-prod.connection'
+              runOptions: 'commands'
+              commands: |
+                docker pull recygroup/recyos-importer-$(Build.SourceBranchName):$(tag)
+                docker stop importer 2>/dev/null || true
+                docker rm importer 2>/dev/null || true
+                docker run -d --name importer --restart unless-stopped -v /home/recygroup/importer/appsettings.json:/app/appsettings.json -v /home/recygroup/importer/nlog.config:/app/nlog.config -v /home/recygroup/importer/logs:/app/logs recygroup/recyos-importer-$(Build.SourceBranchName):$(tag)
+                docker system prune -a -f
+            displayName: 'Deploy OdooImporter to Prod Server'
+  - stage: CleanDocker
+    displayName: 'Clean Docker'
+    condition: always()
+    jobs:
+      - job: Clean
+        pool:
+          name: 'Hosted Agent'
+        steps:
+          - script: docker system prune -a -f
+            displayName: 'Clean Docker' 

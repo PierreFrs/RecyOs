@@ -1,0 +1,110 @@
+<div class="shadow-lg overflow-hidden">
+    <div class="flex flex-col w-full border-b">
+        <!-- Selected depart form -->
+        <mat-tab-group>
+            <mat-tab
+                *ngIf="selectedEntity"
+                label="Identification"
+                data-cy="identification-tab"
+            >
+                <app-identification-tab
+                    [selectedEntity]="selectedEntity"
+                    [identificationFormGroup]="identificationFormGroup"
+                    [entityStatus]="entityStatus"
+                    [entityType]="entityType"
+                    [entityRegion]="entityRegion"
+                >
+                </app-identification-tab>
+            </mat-tab>
+
+            <mat-tab
+                *ngIf="selectedEntity"
+                label="Paramétrage"
+                data-cy="parametrage-tab"
+            >
+                <app-parametrage-tab
+                    [selectedEntity]="selectedEntity"
+                    [parametrageFormGroup]="parametrageFormGroup"
+                    [readonlyConditions]="readonlyObject"
+                    [selectedEntityForm]="selectedEntityForm"
+                >
+                </app-parametrage-tab>
+            </mat-tab>
+
+            <mat-tab
+                *ngIf="selectedEntity && strategyObject.status !== 'particulier'"
+                label="Documents"
+                data-cy="documents-tab"
+            >
+                <app-documents-tab [selectedEntity]="selectedEntity"></app-documents-tab>
+            </mat-tab>
+
+            <mat-tab
+                *ngIf="selectedEntity && strategyObject.type === 'client' && strategyObject.status === 'professional'"
+                label="Balances"
+                data-cy="balances-tab"
+            >
+                <app-balances-tab [selectedClient]="selectedEntity"></app-balances-tab>
+            </mat-tab>
+
+            <mat-tab
+                *ngIf="selectedEntity && strategyObject.type === 'client' && strategyObject.status === 'professional'"
+                label="Couverture client"
+                data-cy="couverture-tab"
+            >
+                <couverture-tab [siretEtablissement]="strategyObject.region === 'france' ? selectedEntity.siret: null"></couverture-tab>
+            </mat-tab>
+
+            <mat-tab
+                *ngIf="selectedEntity && entityRegion === 'france' && strategyObject.status === 'professional'"
+                label="Base SIREN"
+                data-cy="siren-tab"
+            >
+                <siren-tab [siretEntity]="selectedEntity.siret"></siren-tab>
+            </mat-tab>
+        </mat-tab-group>
+        <!-- Actions -->
+        <div class="flex items-center w-full border-t px-8 py-4">
+            <!-- Container for left and right aligned groups -->
+            <div class="flex w-full justify-between">
+                <!-- Left aligned button group -->
+                <div class="flex items-center">
+                    <div *ngIf="canUpdateSiret && entityRegion === 'france'" class="flex items-center">
+                        <div *ngIf="siretFlashMessage" class="flex items-center mr-4">
+                            <ng-container *ngIf="siretFlashMessage === 'success'">
+                                <mat-icon class="text-green-500" [svgIcon]="'heroicons_outline:check'"></mat-icon>
+                                <span class="ml-2">Siret mis à jour</span>
+                            </ng-container>
+                        </div>
+                        <button mat-flat-button color="warn" (click)="openSiretUpdateDialog()" [disabled]="!canUpdateSiret || !isAdmin">
+                            Mettre à jour le Siret
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Right aligned button group -->
+                <div class="flex items-center">
+                    <div *ngIf="flashMessage" class="flex items-center mr-4">
+                        <ng-container *ngIf="flashMessage === 'success'">
+                            <mat-icon class="text-green-500" [svgIcon]="'heroicons_outline:check'"></mat-icon>
+                            <span class="ml-2">Client mis à jour</span>
+                        </ng-container>
+                        <ng-container *ngIf="flashMessage === 'error'">
+                            <mat-icon class="text-red-500" [svgIcon]="'heroicons_outline:x'"></mat-icon>
+                            <span class="ml-2">Une erreur est survenue lors de la mise à jour !</span>
+                        </ng-container>
+                    </div>
+                    <button mat-flat-button
+                            [color]="'primary'"
+                            (click)="updateEntity()"
+                            [disabled]="!canUpdate || (selectedEntityForm?.invalid && !isAdmin)"
+                            data-cy="update-entity-button"
+                    >
+                        Mettre à jour le client
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

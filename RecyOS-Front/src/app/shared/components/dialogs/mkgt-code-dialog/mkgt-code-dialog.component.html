@@ -1,0 +1,38 @@
+<h1 class="text-4xl font-extrabold tracking-tight flex justify-center" mat-dialog-title>Le code MKGT existe déjà</h1>
+<div mat-dialog-content class="w-max">
+    <p>L'entité existe déjà dans MKGT, voulez-vous l'écraser ou modifier le code ?</p>
+    <div *ngIf="!showModifyInput" class="w-full flex justify-center mt-4 gap-4">
+        <button mat-flat-button
+                (click)="onOverwrite()"
+                type="button"
+                color="primary"
+        >Écraser</button>
+        <button mat-flat-button
+                (click)="onModify()"
+                type="button"
+                color="primary"
+        >Modifier</button>
+    </div>
+    <div *ngIf="showModifyInput" class="flex items-center mt-4 gap-4">
+        <mat-form-field class="w-40">
+            <input matInput
+                   placeholder="Modifier le code MKGT"
+                   [formControl]="codeMkgtControl"
+
+            />
+        </mat-form-field>
+        <button mat-flat-button
+                (click)="onValidate()"
+                type="button"
+                color="primary"
+                class="mb-4"
+        >Valider</button>
+    </div>
+</div>
+<div mat-dialog-actions>
+    <button mat-button (click)="dialogRef.close()" color="warn">Annuler</button>
+    <button *ngIf="showModifyInput"
+            mat-flat-button
+            (click)="onModify()"
+            color="accent">Retour</button>
+</div>

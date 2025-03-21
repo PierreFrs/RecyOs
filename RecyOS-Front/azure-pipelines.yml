@@ -1,0 +1,162 @@
+# Node.js with Angular
+# Build a Node.js project that uses Angular.
+# Add steps that analyze code, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
+
+trigger:
+- main
+- release-*
+- dev
+
+pool:
+  name: 'Hosted Agent'
+
+variables:
+  dockerRegistryServiceConnection: 'docker-hub-connection'
+  containerRegistry: 'docker.io'
+  dockerImageName: ''
+  tag: '$(Build.BuildId)'
+  ${{ if eq(variables['Build.SourceBranchName'], 'main') }}:
+      env: 'production'
+  ${{ else }}:
+      env: 'stage'
+
+stages:
+  - stage : BuildAndPush
+    displayName: 'Build and Push'
+    jobs:
+     - job: Build
+       pool:
+         name: 'Hosted Agent'
+       steps:
+        - task: NodeTool@0
+          inputs:
+            versionSpec: '18.x'
+          displayName: 'Install Node.js'
+
+        - script: |
+            npm install -g @angular/cli
+            npm install
+            ng build --aot --output-hashing=all
+          displayName: 'npm install and build'
+
+        - task: ArchiveFiles@2
+          displayName: 'Archive files'
+          inputs:
+            rootFolderOrFile: '$(System.DefaultWorkingDirectory)/dist/fuse/'
+            includeRootFolder: false
+            archiveType: zip
+            archiveFile: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
+            replaceExistingArchive: true
+
+        - task: PublishBuildArtifacts@1
+          inputs:
+            PathtoPublish: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
+            ArtifactName: 'drop'
+            publishLocation: 'Container'
+
+        - script: |
+              echo "##vso[task.setVariable variable=dockerImageName]recygroup/recyos-frontend-$(Build.SourceBranchName)"
+          displayName: 'Set Docker Image Name'
+
+        - task: Docker@2
+          displayName: 'Build Docker image'
+          inputs:
+            command: build
+            repository: $(dockerImageName)
+            Dockerfile: '**/Dockerfile'
+            tags: |
+                $(tag)
+            arguments: '--build-arg NODE_ENV="$(env)"'
+
+        - task: Docker@2
+          displayName: 'Push Docker image'
+          inputs:
+            command: push
+            repository: $(dockerImageName)
+            tags: |
+              $(tag)
+            containerRegistry: $(dockerRegistryServiceConnection)
+
+    # Étape de déploiement sur le serveur Dev
+  - stage: DeployToDev
+    displayName: 'Deploy to Dev Server'
+    condition: eq(variables['Build.SourceBranchName'], 'dev')
+    jobs:
+        - job: Deploy
+          pool:
+              name: 'Hosted Agent'
+          steps:
+              - script: |
+                    echo "##vso[task.setVariable variable=dockerImageName]recygroup/recyos-frontend-$(Build.SourceBranchName)"
+                displayName: 'Set Docker Image Name'
+              - task: SSH@0
+                inputs:
+                    sshEndpoint: 'recyos-dev.connection'
+                    runOptions: 'commands'
+                    commands: |
+                        docker pull recygroup/recyos-frontend-dev:$(tag)
+                        docker stop front-end || true
+                        docker rm front-end || true
+                        docker run -d --name front-end --restart unless-stopped -p 443:443 -v /home/recygroup/front-end/dev-recyos.recygroup.local.pem:/etc/ssl/certs/cert.crt -v /home/recygroup/front-end/dev-recyos.recygroup.local.key:/etc/ssl/private/key.key -v /home/recygroup/front-end/nginx.conf:/etc/nginx/conf.d/default.conf -v /home/recygroup/front-end/config.json:/usr/share/nginx/html/assets/config.json recygroup/recyos-frontend-dev:$(tag)
+                        docker system prune -f
+                displayName: 'Deploy to Dev Server'
+
+      # Étape de déploiement sur le serveur Test
+  - stage: DeployToTest
+    displayName: 'Deploy to Test Server'
+    condition: startsWith(variables['Build.SourceBranchName'], 'release')
+    jobs:
+        - job: Deploy
+          pool:
+              name: 'Hosted Agent'
+          steps:
+              - script: |
+                    echo "##vso[task.setVariable variable=dockerImageName]recygroup/recyos-frontend-$(Build.SourceBranchName)"
+                displayName: 'Set Docker Image Name'
+              - task: SSH@0
+                inputs:
+                    sshEndpoint: 'recyos-test.connection'
+                    runOptions: 'commands'
+                    commands: |
+                        docker pull recygroup/recyos-frontend-$(Build.SourceBranchName):$(tag)
+                        docker stop front-end || true
+                        docker rm front-end || true
+                        docker run -d --name front-end --restart unless-stopped -p 443:443 -v /home/recygroup/front-end/test-recyos.recygroup.local.cer:/etc/ssl/certs/cert.crt -v /home/recygroup/front-end/test-recyos.recygroup.local.key:/etc/ssl/private/key.key -v /home/recygroup/front-end/nginx.conf:/etc/nginx/conf.d/default.conf -v /home/recygroup/front-end/config.json:/usr/share/nginx/html/assets/config.json recygroup/recyos-frontend-$(Build.SourceBranchName):$(tag)
+                        docker system prune -a -f
+                displayName: 'Deploy to Test Server'
+
+      # Étape de déploiement sur le serveur Prod
+  - stage: DeployToProd
+    displayName: 'Deploy to Prod Server'
+    condition: startsWith(variables['Build.SourceBranchName'], 'main')
+    jobs:
+        - job: Deploy
+          pool:
+              name: 'Hosted Agent'
+          steps:
+              - script: |
+                    echo "##vso[task.setVariable variable=dockerImageName]recygroup/recyos-frontend-$(Build.SourceBranchName)"
+                displayName: 'Set Docker Image Name'
+              - task: SSH@0
+                inputs:
+                    sshEndpoint: 'recyos-prod.connection'
+                    runOptions: 'commands'
+                    commands: |
+                        docker pull recygroup/recyos-frontend-$(Build.SourceBranchName):$(tag)
+                        docker stop front-end || true
+                        docker rm front-end || true
+                        docker run -d --name front-end --restart unless-stopped -p 443:443 -v /home/recygroup/front-end/recyos.recygroup.local.cer:/etc/ssl/certs/cert.crt -v /home/recygroup/front-end/recyos.recygroup.local.key:/etc/ssl/private/key.key -v /home/recygroup/front-end/nginx.conf:/etc/nginx/conf.d/default.conf -v /home/recygroup/front-end/config.json:/usr/share/nginx/html/assets/config.json recygroup/recyos-frontend-$(Build.SourceBranchName):$(tag)
+                        docker system prune -a -f
+                displayName: 'Deploy to Test Server'
+
+  - stage: CleanDocker
+    displayName: 'Clean Docker'
+    condition: always()
+    jobs:
+        - job: Clean
+          pool:
+              name: 'Hosted Agent'
+          steps:
+              - script: docker system prune -a -f
+                displayName: 'Clean Docker'

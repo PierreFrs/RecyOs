@@ -1,0 +1,51 @@
+<h1 class="text-4xl font-extrabold tracking-tight mb-4" mat-dialog-title>
+    Ajouter un nouveau groupe
+</h1>
+<div mat-dialog-content>
+    <mat-form-field
+        *ngIf="!isGroupCreated"
+        class="w-full"
+        appearance="fill"
+        [formGroup]="groupForm"
+        (ngSubmit)="createGroup()"
+    >
+        <input
+            [autocomplete]="'off'"
+            [placeholder]="'Nom du groupe'"
+            [formControl]="nameControl"
+            matInput
+        />
+        <mat-error *ngIf="nameControl.hasError('required')">
+            Le nom est requis
+        </mat-error>
+        <mat-error *ngIf="nameControl.hasError('groupExists')">
+            Ce nom de groupe existe déjà
+        </mat-error>
+    </mat-form-field>
+    <button
+        *ngIf="!isGroupCreated"
+        mat-raised-button
+        color="primary"
+        (click)="createGroup()"
+        [disabled]="groupForm.invalid"
+    >
+        Créer
+    </button>
+
+    <div
+        *ngIf="isGroupCreated"
+        class="flex flex-col justify-center items-center gap-4"
+    >
+        <h2 class="text-2xl font-extrabold tracking-tight">
+            Le groupe a été créé avec succès !
+        </h2>
+        <button
+            mat-raised-button
+            color="primary"
+            class="w-fit"
+            (click)="closeDialog()"
+        >
+            Fermer
+        </button>
+    </div>
+</div>

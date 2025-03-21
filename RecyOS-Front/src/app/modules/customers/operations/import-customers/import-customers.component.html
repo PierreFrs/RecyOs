@@ -1,0 +1,22 @@
+<div class="flex flex-wrap">
+    <!-- Import base client MKGT -->
+    <app-operations-card
+        [cardIcon]="'feather:database'"
+        [title]="'Base client MKGT'"
+        [description]="'Importe les fiches de facturation valides qui ne sont pas dans RecyOs.'"
+        [actionLabel]="'Importer'"
+        [actionType]="'import'"
+        (actionTriggered)="ImportAllValidMkgtCustomers()"
+    ></app-operations-card>
+    <!-- END Import base client MKGT -->
+    <!-- Import fiche client MKGT -->
+    <app-operations-card
+        [cardIcon]="'mat_outline:account_box'"
+        [title]="'Fiche client MKGT'"
+        [description]="'Importe une fiche de facturation valide depuis la base MKGT.'"
+        [actionLabel]="'Importer'"
+        [actionType]="'import'"
+        (actionTriggered)="ImportCustomerMkgtByCode()"
+    ></app-operations-card>
+    <!-- END Import fiche client MKGT -->
+</div>

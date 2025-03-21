@@ -1,0 +1,98 @@
+<ng-container *ngIf="hasGroupData !== false; else noGroup">
+    <div class="flex flex-col p-3">
+        <div class="mt-3 text-4xl font-bold truncate">{{ groupName }}</div>
+        <div class="flex flex-col w-full gap-4">
+            <div class="flex flex-col gap-4 max-w-160 sm:items-start w-full">
+                <app-input-field
+                    class="w-full"
+                    [label]="'Nom'"
+                    [control]="nameControl"
+                    [readonly]="!userCanUpdateGroup && !userIsAdmin"
+                    [errorMessages]="{}"
+                ></app-input-field>
+            </div>
+            <!-- companies lists -->
+            <div class="flex gap-8">
+                <div *ngIf="selectedGroup.etablissementClients.length > 0">
+                    <div class="text-lg font-bold">
+                        Clients français rattachés :
+                    </div>
+                    <mat-list class="w-full">
+                        <mat-list-item
+                            *ngFor="
+                                let company of selectedGroup.etablissementClients
+                            "
+                        >
+                            <span matListItemTitle>{{ company.nom }}</span>
+                            <span matListItemLine>{{ company.siret }}</span>
+                        </mat-list-item>
+                    </mat-list>
+                </div>
+                <div *ngIf="selectedGroup.clientEuropes.length > 0">
+                    <div class="text-lg font-bold">
+                        Clients européens rattachés :
+                    </div>
+                    <mat-list class="w-full">
+                        <mat-list-item
+                            *ngFor="let company of selectedGroup.clientEuropes"
+                        >
+                            <span matListItemTitle>{{ company.nom }}</span>
+                            <span matListItemLine>{{ company.vat }}</span>
+                        </mat-list-item>
+                    </mat-list>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="flex items-center justify-end gap-4 w-full border-t px-8 py-4">
+        <div class="flex items-center">
+            <div *ngIf="flashMessage" class="flex items-center mr-4">
+                <ng-container *ngIf="flashMessage === 'success'">
+                    <mat-icon
+                        class="text-green-500"
+                        [svgIcon]="'heroicons_outline:check'"
+                    ></mat-icon>
+                    <span class="ml-2">Groupe mis à jour</span>
+                </ng-container>
+                <ng-container *ngIf="flashMessage === 'error'">
+                    <mat-icon
+                        class="text-red-500"
+                        [svgIcon]="'heroicons_outline:x'"
+                    ></mat-icon>
+                    <span class="ml-2">Erreur lors de la mise à jour</span>
+                </ng-container>
+            </div>
+            <button
+                mat-flat-button
+                [color]="'primary'"
+                (click)="updateGroup()"
+                [disabled]="
+                    !userCanUpdateGroup ||
+                    (selectedGroupForm.invalid && !userIsAdmin)
+                "
+            >
+                Mettre à jour
+            </button>
+        </div>
+        <div class="flex items-center">
+            <button
+                mat-flat-button
+                [color]="'warn'"
+                (click)="deleteGroup()"
+                [disabled]="!userCanDeleteGroup || !userIsAdmin"
+            >
+                Supprimer
+            </button>
+        </div>
+    </div>
+</ng-container>
+
+<ng-template #noGroup>
+    <div class="flex flex-col p-3">
+        <div class="text-4xl font-extrabold tracking-tight">
+            Groupe non trouvé
+        </div>
+    </div>
+</ng-template>

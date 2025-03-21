@@ -1,0 +1,13 @@
+<mat-form-field class="w-full p-1">
+    <mat-label>{{ label }}</mat-label>
+    <mat-select [formControl]="control">
+        <ng-container *ngFor="let option of options">
+            <mat-option [value]="option.value">
+                <span>{{ option.label }}</span>
+            </mat-option>
+        </ng-container>
+    </mat-select>
+    <mat-error *ngIf="control?.invalid && control.touched">
+        <span *ngIf="control.errors?.required">{{ errorMessage }}</span>
+    </mat-error>
+</mat-form-field>

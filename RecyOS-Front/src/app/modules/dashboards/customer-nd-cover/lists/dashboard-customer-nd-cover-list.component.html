@@ -1,0 +1,87 @@
+<div class="sm:absolute sm:inset-0 flex flex-col flex-auto min-w-0 sm:overflow-hidden bg-card dark:bg-transparent">
+    <!-- Header -->
+    <div class="relative flex flex-col sm:flex-row flex-0 sm:items-center sm:justify-between py-4 px-4 md:px-4 border-b">
+        <!-- Loader -->
+        <div
+            *ngIf="isLoading"
+            class="absolute inset-x-0 bottom-0">
+            <mat-progress-bar [mode]="'indeterminate'"></mat-progress-bar>
+        </div>
+        <!-- Title -->
+        <div class="text-4xl font-extrabold tracking-tight">{{title}}</div>
+    </div>
+    <!-- Main -->
+    <div class="flex flex-auto overflow-hidden">
+
+        <!-- Liste des covertures -->
+        <div class="flex flex-col flex-auto sm:mb-18 overflow-hidden sm:overflow-y-auto">
+            <ng-container *ngIf="(entreprisesNDCover$ | async) as couvertures; else noNDCover">
+                <ng-container *ngIf="entreprisesNDCovers.length > 0; else noNDCover">
+                    <div class="grid">
+                        <div
+                            class="nd-cover-list-grid z-10 sticky top-0 grid gap-4 py-4 px-6 md:px-8 shadow text-md font-semibold text-secondary bg-gray-50 dark:bg-black dark:bg-opacity-5"
+                            matSort
+                            matSortDisableClear>
+                            <div>Détails</div>
+                            <div>Nom</div>
+                            <div class="hidden xl:block" [mat-sort-header]="'Siren'">Siren</div>
+                            <div class="hidden md:block" [mat-sort-header]="'Statut'">Statut</div>
+                        </div>
+                        <!-- Rows -->
+                        <ng-container *ngIf="(entreprisesNDCover$ | async) as ndCoversClient">
+                            <ng-container *ngFor="let ndCover of entreprisesNDCovers; trackBy: trackByFn">
+                                <div class="nd-cover-list-grid grid items-center gap-4 py-1 px-6 md:px-8 border-b">
+                                    <div class="flex items-center">
+                                        <div class="relative flex flex-0 items-center justify-center w-12 h-12 mr-6 rounded overflow-hidden">
+                                            <div>
+                                                <button
+                                                    (click)="toggleDetails(ndCover.id)"
+                                                    class="min-w-10 min-h-7 h-7 px-2 leading-6"
+                                                    mat-stroked-button>
+                                                    <mat-icon
+                                                        [svgIcon]="selectedNDCoverId === ndCover.id ? 'heroicons_solid:chevron-up' : 'heroicons_solid:chevron-down'"
+                                                        class="icon-size-5"></mat-icon>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div>{{ndCover.raisonSociale}}</div>
+                                    <div class="hidden xl:block">{{ndCover.siren}}</div>
+                                    <app-nd-cover-status class="hidden md:block" [cover]="ndCover"></app-nd-cover-status>
+                                </div>
+                                <!-- Details -->
+                                <div class="grid">
+                                    <ng-container  *ngIf="selectedNDCoverId === ndCover.id">
+                                        <ng-container *ngTemplateOutlet="rowDetailsTemplate; context: {$implicit: ndCover}"></ng-container>
+                                    </ng-container>
+                                </div>
+                            </ng-container>
+                        </ng-container>
+                    </div>
+                </ng-container>
+            </ng-container>
+            <mat-paginator
+                [length]="pagination.length"
+                [ngClass]="{'pointer-events-none': isLoading}"
+                [pageIndex]="pagination.page"
+                [pageSizeOptions]="[5, 10, 25, 100]"
+                [pageSize]="pagination.size"
+                [showFirstLastButtons]="true"
+                class="sm:absolute sm:inset-x-0 sm:bottom-0 border-b sm:border-t sm:border-b-0 z-10 bg-gray-50 dark:bg-transparent"
+            >
+            </mat-paginator>
+
+            <ng-template #rowDetailsTemplate>
+                <business-nd-cover-detail [BusinessNDCoverId]="selectedNDCoverId"></business-nd-cover-detail>
+            </ng-template>
+            <ng-template #noNDCover>
+                <div class="flex flex-col items-center justify-center flex-auto">
+                    <div class="flex flex-col items-center justify-center">
+                        <mat-icon [svgIcon]="'heroicons_outline:search'" class="text-4xl"></mat-icon>
+                        <div class="text-4xl font-semibold tracking-tight">Aucun ND Cover entreprise</div>
+                    </div>
+                </div>
+            </ng-template>
+        </div>
+    </div>
+</div>

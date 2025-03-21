@@ -1,0 +1,148 @@
+<app-entities-list></app-entities-list>
+<!--
+<div class="sm:absolute sm:inset-0 flex flex-col flex-auto min-w-0 sm:overflow-hidden bg-card dark:bg-transparent">
+
+    &lt;!&ndash; Header &ndash;&gt;
+    <div class="relative flex flex-col sm:flex-row flex-0 sm:items-center sm:justify-between py-4 px-4 md:px-4 border-b">
+        &lt;!&ndash; Loader &ndash;&gt;
+        <div
+            *ngIf="isLoading"
+            class="absolute inset-x-0 bottom-0">
+            <mat-progress-bar [mode]="'indeterminate'"></mat-progress-bar>
+        </div>
+        &lt;!&ndash; Title &ndash;&gt;
+        <div class="text-4xl font-extrabold tracking-tight">Clients Européens</div>
+        &lt;!&ndash; Actions &ndash;&gt;
+        <div class="flex shrink-0 items-center mt-6 sm:mt-0 sm:ml-4">
+            <mat-form-field class="fuse-mat-dense fuse-mat-rounded min-w-64 mr-4">
+                <mat-label></mat-label>
+                <mat-select
+                    [formControl]="selectedFilterType"
+                    [placeholder]="'Chercher par'">
+                    <mat-option [value]="0">
+                        <span>Nom</span>
+                    </mat-option>
+                    <mat-option  [value]="1">
+                        <span>TVA Intra</span>
+                    </mat-option>
+                    <mat-option  [value]="2">
+                        <span>Code MKGT</span>
+                    </mat-option>
+                    <mat-option  [value]="3">
+                        <span>Id Odoo</span>
+                    </mat-option>
+                    <mat-option  [value]="8">
+                        <span>Code GPI</span>
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+            &lt;!&ndash; Search &ndash;&gt;
+            <mat-form-field
+                [subscriptSizing]="'dynamic'"
+                class="fuse-mat-dense fuse-mat-rounded min-w-64">
+                <mat-icon [svgIcon]="'heroicons_solid:search'" class="icon-size-5" matPrefix></mat-icon>
+                <input
+                    [autocomplete]="'off'"
+                    [formControl]="searchInputControl"
+                    [placeholder]="'Chercher entreprise'"
+                    matInput>
+            </mat-form-field>
+            &lt;!&ndash; Add product button &ndash;&gt;
+            <button
+                (click)="createCustomer()"
+                [color]="'primary'"
+                class="ml-4"
+                mat-flat-button
+                [disabled]="!userIsCreateClient">
+                <mat-icon [svgIcon]="'heroicons_outline:plus'"></mat-icon>
+                <span class="ml-2 mr-1">Ajouter</span>
+            </button>
+        </div>
+    </div>
+    &lt;!&ndash; Main &ndash;&gt;
+    <div class="flex flex-auto overflow-hidden">
+
+        &lt;!&ndash; Liste des entreprises &ndash;&gt;
+        <div class="flex flex-col flex-auto sm:mb-18 overflow-hidden sm:overflow-y-auto">
+            <ng-container *ngIf="(clientsEurope$ | async) as clients; else noClient">
+                <ng-container *ngIf="clients.length > 0; else noClient">
+                    <div class="grid">
+                        <div
+                            class="clients-grid z-10 sticky top-0 grid gap-4 py-4 px-6 md:px-8 shadow text-md font-semibold text-secondary bg-gray-50 dark:bg-black dark:bg-opacity-5"
+                            matSort
+                            matSortDisableClear>
+                            <div>Détails</div>
+                            <div [mat-sort-header]="'nom'">Nom</div>
+                            <div [mat-sort-header]="'ville'">Ville</div>
+                            <div class="hidden md:block" [mat-sort-header]="'Vat'">TVA</div>
+                            <div class="hidden lg:block">E-mail</div>
+                            <div class="hidden lg:block">Téléphone</div>
+                            <div class="hidden xl:block" [mat-sort-header]="'CodeMkgt'">Code MKGT</div>
+                            <div class="hidden xxl:block" [mat-sort-header]="'IdOdoo'">Id Odoo</div>
+                            <div class="hidden xxl:block" [mat-sort-header]="'CodeGpi'">Code GPI</div>
+
+                        </div>
+                    </div>
+                    &lt;!&ndash; Rows &ndash;&gt;
+                    <ng-container *ngIf="(clientsEurope$ | async) as clients">
+                        <ng-container *ngFor="let client of clients; trackBy: trackByFn">
+                            <div class="clients-grid grid items-center gap-4 py-1 px-6 md:px-8 border-b">
+                                <div class="flex items-center">
+                                    <div class="relative flex flex-0 items-center justify-center w-12 h-12 mr-6 rounded overflow-hidden">
+                                        <div>
+                                            <button
+                                                (click)="toggleDetails(client.id)"
+                                                class="min-w-10 min-h-7 h-7 px-2 leading-6"
+                                                mat-stroked-button>
+                                                <mat-icon
+                                                    [svgIcon]="selectedClientId === client.id ? 'heroicons_solid:chevron-up' : 'heroicons_solid:chevron-down'"
+                                                    class="icon-size-5"></mat-icon>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>{{client.nom}}</div>
+                                <div>{{client.villeFacturation}}</div>
+                                <div class="hidden md:block">{{client.vat}}</div>
+                                <div class="hidden lg:block">{{client.emailFacturation}}</div>
+                                <div class="hidden lg:block">{{client.telephoneFacturation}}</div>
+                                <div class="hidden xl:block">{{client.codeMkgt}}</div>
+                                <div class="hidden xxl:block">{{client.idOdoo}}</div>
+                                <div class="hidden xxl:block">{{client.codeGpi}}</div>
+
+                            </div>
+                            <div class="grid">
+                                <ng-container *ngIf="selectedClientId === client.id">
+                                    <ng-container *ngTemplateOutlet="rowDetailsTemplate; context: {$implicit: client}"></ng-container>
+                                </ng-container>
+                            </div>
+                        </ng-container>
+                    </ng-container>
+                </ng-container>
+            </ng-container>
+            <mat-paginator
+                [length]="pagination.length"
+                [ngClass]="{'pointer-events-none': isLoading}"
+                [pageIndex]="pagination.page"
+                [pageSizeOptions]="[5, 10, 25, 100]"
+                [pageSize]="pagination.size"
+                [showFirstLastButtons]="true"
+                class="sm:absolute sm:inset-x-0 sm:bottom-0 border-b sm:border-t sm:border-b-0 z-10 bg-gray-50 dark:bg-transparent"
+            >
+            </mat-paginator>
+
+            <ng-template #rowDetailsTemplate let-depart>
+                <europe-detail [europeId]="selectedClientId" [clientsEurope]="clientsEurope"></europe-detail>
+            </ng-template>
+            <ng-template #noClient>
+                <div class="flex flex-col items-center justify-center flex-auto">
+                    <div class="flex flex-col items-center justify-center">
+                        <mat-icon [svgIcon]="'heroicons_outline:search'" class="text-4xl"></mat-icon>
+                        <div class="text-4xl font-semibold tracking-tight">Aucun client Européen</div>
+                    </div>
+                </div>
+            </ng-template>
+        </div>
+    </div>
+</div>
+-->

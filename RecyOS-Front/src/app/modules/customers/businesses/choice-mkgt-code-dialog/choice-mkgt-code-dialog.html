@@ -1,0 +1,41 @@
+<h1 class="text-4xl font-extrabold tracking-tight" mat-dialog-title>
+    Le code client existe déja dans MKGT
+</h1>
+<div mat-dialog-content>
+    <mat-form-field class="w-full" appearance="fill">
+        <input
+            [autocomplete]="'off'"
+            [placeholder]="'Choisissez un code client MKGT'"
+            [formControl]="codeMkgtControl"
+            matInput
+        />
+        <mat-error *ngIf="codeMkgtControl.hasError('required')">
+            Le code client est requis pour créer un nouveau client dans mkgt.
+        </mat-error>
+        <mat-error *ngIf="codeMkgtControl.hasError('duplicateCodeMkgt')">
+            Ce code est dèja affecté à une autre fiche client.
+        </mat-error>
+        <mat-error *ngIf="codeMkgtControl.hasError('invalidLengthCodeMkgt')">
+            Le code ne peut excéder 13 caractères.
+        </mat-error>
+        <mat-error *ngIf="codeMkgtControl.hasError('invalidCodeMkgt')">
+            Le code ne peut être constitué que de majuscules et de chiffres.
+        </mat-error>
+        <mat-hint *ngIf="codeMkgtControl.valid" style="color: green">
+            Le code client est valide.
+        </mat-hint>
+    </mat-form-field>
+</div>
+<div mat-dialog-actions class="flex flex-row items-center justify-between">
+    <div class="flex items-center">
+        <button mat-button (click)="onCancel()">Annuler</button>
+    </div>
+    <button
+        mat-flat-button
+        (click)="onCreate()"
+        color="primary"
+        [disabled]="codeMkgtControl.invalid"
+    >
+        Créer
+    </button>
+</div>

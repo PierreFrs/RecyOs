@@ -1,0 +1,37 @@
+<h1 class="text-4xl font-extrabold tracking-tight mb-4" mat-dialog-title>Ajouter une nouvelle société</h1>
+<div mat-dialog-content>
+    <form *ngIf="!isSocieteCreated" [formGroup]="societeForm" (ngSubmit)="createSociete()">
+        <app-input-field 
+            label="Nom"
+            type="text"
+            [control]="nomControl"
+            [errorMessages]="{required: 'Le nom est requis'}">
+        </app-input-field>
+
+        <app-input-field 
+            label="ID Odoo"
+            type="text"
+            [control]="idOdooControl"
+            [errorMessages]="{required: 'L\'ID Odoo est requis'}">
+        </app-input-field>
+
+        <button 
+            mat-raised-button 
+            color="primary" 
+            type="submit" 
+            [disabled]="societeForm.invalid">
+            Ajouter la société
+        </button>
+    </form>
+
+    <div *ngIf="isSocieteCreated" class="flex flex-col justify-center items-center gap-4">
+        <h2 class="text-2xl font-extrabold tracking-tight">La société a été créée avec succès !</h2>
+        <button 
+            mat-raised-button 
+            color="primary" 
+            class="w-fit" 
+            (click)="closeDialog()">
+            Fermer
+        </button>
+    </div>
+</div> 

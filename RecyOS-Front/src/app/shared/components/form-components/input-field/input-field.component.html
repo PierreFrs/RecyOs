@@ -1,0 +1,44 @@
+<mat-form-field class="w-full p-1">
+    <mat-label>{{ label }}</mat-label>
+    <input
+        matInput
+        [type]="type"
+        [formControl]="control"
+        [attr.placeholder]="label"
+        [readonly]="readonly"
+    />
+    <mat-error *ngIf="control?.invalid && control?.touched">
+        <span
+            *ngIf="control.errors?.required"
+            >{{ errorMessages?.['required'] }}</span
+        >
+        <span
+            *ngIf="control.errors?.email"
+            >{{ errorMessages?.['email'] }}</span
+        >
+        <span
+            *ngIf="control.errors?.pattern"
+            >{{ errorMessages?.['pattern'] }}</span
+        >
+        <span
+            *ngIf="control.errors?.['clientExists']"
+            >{{ errorMessages?.['clientExists'] }}</span
+        >
+        <span
+            *ngIf="control.errors?.['iban']"
+            >{{ errorMessages?.['pattern'] }}</span
+        >
+        <span
+            *ngIf="control.errors?.['emailListInvalid']"
+            >{{ errorMessages?.['email'] }}</span
+        >
+        <span
+            *ngIf="control.errors?.['minlength']"
+            >{{ errorMessages?.['minlength'] }}</span
+        >
+        <span
+            *ngIf="control.errors?.['maxlength']"
+            >{{ errorMessages?.['maxlength'] }}</span
+        >
+    </mat-error>
+</mat-form-field>

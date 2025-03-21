@@ -1,0 +1,95 @@
+<div class="sm:absolute sm:inset-0 flex flex-col flex-auto min-w-0 sm:overflow-hidden bg-card dark:bg-transparent">
+    <!-- Header -->
+    <div class="relative flex flex-col sm:flex-row flex-0 sm:items-center sm:justify-between py-4 px-4 md:px-4 border-b">
+        <!-- Loader -->
+        <div
+            *ngIf="isLoading"
+            class="absolute inset-x-0 bottom-0">
+            <mat-progress-bar [mode]="'indeterminate'"></mat-progress-bar>
+        </div>
+        <!-- Title -->
+        <div class="text-4xl font-extrabold tracking-tight">{{title}}</div>
+    </div>
+    <!-- Main -->
+    <div class="flex flex-auto overflow-hidden">
+
+        <!-- Liste des covertures -->
+        <div class="flex flex-col flex-auto sm:mb-18 overflow-hidden sm:overflow-y-auto">
+            <ng-container *ngIf="(entreprisesCouverture$ | async) as couvertures; else noCouverture">
+                <ng-container *ngIf="entreprisesCouvertures.length > 0; else noCouverture">
+                    <div class="grid">
+                        <div
+                            class="coverage-list-grid z-10 sticky top-0 grid gap-4 py-4 px-6 md:px-8 shadow text-md font-semibold text-secondary bg-gray-50 dark:bg-black dark:bg-opacity-5"
+                            matSort
+                            matSortDisableClear>
+                            <div>Détails</div>
+                            <div [mat-sort-header]="'DateDemande'">Date</div>
+                            <div>Nom</div>
+                            <div class="hidden xl:block" [mat-sort-header]="'Siren'">Siren</div>
+                            <div class="hidden md:block" [mat-sort-header]="'MontantDemande'">Demandé</div>
+                            <div class="hidden md:block" [mat-sort-header]="'Reponse'">Réponse</div>
+                            <div class="hidden md:block" [mat-sort-header]="'Notation'">Note</div>
+                            <div class="hidden md:block" [mat-sort-header]="'MontantAgrement'">Accordé</div>
+                        </div>
+                        <!-- Rows -->
+                        <ng-container *ngIf="(entreprisesCouverture$ | async) as couverturesClient">
+                            <ng-container *ngFor="let couverture of entreprisesCouvertures; trackBy: trackByFn">
+                                <div class="coverage-list-grid grid items-center gap-4 py-1 px-6 md:px-8 border-b">
+                                    <div class="flex items-center">
+                                        <div class="relative flex flex-0 items-center justify-center w-12 h-12 mr-6 rounded overflow-hidden">
+                                            <div>
+                                                <button
+                                                    (click)="toggleDetails(couverture.id)"
+                                                    class="min-w-10 min-h-7 h-7 px-2 leading-6"
+                                                    mat-stroked-button>
+                                                    <mat-icon
+                                                        [svgIcon]="selectedCouvertureId === couverture.id ? 'heroicons_solid:chevron-up' : 'heroicons_solid:chevron-down'"
+                                                        class="icon-size-5"></mat-icon>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div>{{couverture?.dateDemande | date: 'dd/MM/yyyy'}}</div>
+                                    <div>{{couverture.entrepriseBase?.nomEntreprise}}</div>
+                                    <div class="hidden xl:block">{{couverture.siren}}</div>
+                                    <div class="hidden md:block">{{couverture.montantDemande | currency:'EUR':'symbol':'1.0-0'}}</div>
+                                    <div class="hidden md:block">{{couverture.typeReponse}}</div>
+                                    <div class="hidden md:block"><span [ngClass]="(couverture.notation | trimZero) | color">{{couverture.notation | trimZero}}</span></div>
+                                    <div class="hidden md:block">{{couverture.montantGarantie}} {{couverture.deviseGarantie}}</div>
+                                </div>
+                                <!-- Details -->
+                                <div class="grid">
+                                    <ng-container  *ngIf="selectedCouvertureId === couverture.id">
+                                        <ng-container *ngTemplateOutlet="rowDetailsTemplate; context: {$implicit: couverture}"></ng-container>
+                                    </ng-container>
+                                </div>
+                            </ng-container>
+                        </ng-container>
+                    </div>
+                </ng-container>
+            </ng-container>
+            <mat-paginator
+                [length]="pagination.length"
+                [ngClass]="{'pointer-events-none': isLoading}"
+                [pageIndex]="pagination.page"
+                [pageSizeOptions]="[5, 10, 25, 100]"
+                [pageSize]="pagination.size"
+                [showFirstLastButtons]="true"
+                class="sm:absolute sm:inset-x-0 sm:bottom-0 border-b sm:border-t sm:border-b-0 z-10 bg-gray-50 dark:bg-transparent"
+            >
+            </mat-paginator>
+
+            <ng-template #rowDetailsTemplate>
+                <client-couverture-detail [entrepriseBaseClient]="entrepriseBaseClient" [BusinessCoverId]="selectedCouvertureId"></client-couverture-detail>
+            </ng-template>
+            <ng-template #noCouverture>
+                <div class="flex flex-col items-center justify-center flex-auto">
+                    <div class="flex flex-col items-center justify-center">
+                        <mat-icon [svgIcon]="'heroicons_outline:search'" class="text-4xl"></mat-icon>
+                        <div class="text-4xl font-semibold tracking-tight">Aucun couverture entreprise</div>
+                    </div>
+                </div>
+            </ng-template>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,160 @@
+    <!-- Pour les contrôles classiques (non switch) dans un mat-form-field -->
+    <ng-container *ngIf="parameter.controlType !== 'switch'; else switchTemplate">
+      <mat-form-field class="w-full" [subscriptSizing]="'dynamic'">
+        <mat-label>{{ parameter.label }}</mat-label>
+        <ng-container [ngSwitch]="parameter.controlType">
+          <!-- Text, Email, Password, Tel, Search, URL -->
+          <ng-container *ngSwitchCase="'text'">
+            <ng-container *ngIf="parameter.prefixIcon">
+                <mat-icon matPrefix class="icon-size-5" [svgIcon]="parameter.prefixIcon"></mat-icon>
+            </ng-container>
+            <input matInput [placeholder]="parameter.placeholder || ''" [ngModel]="parameter.valeur" (ngModelChange)="onValueChange($event)" [disabled]="disabled" (blur)="markAsTouched()">
+            <ng-container *ngIf="parameter.suffixIcon">
+                <mat-icon matSuffix class="icon-size-5" [svgIcon]="parameter.suffixIcon"></mat-icon>
+            </ng-container>
+          </ng-container>
+          <ng-container *ngSwitchCase="'email'">
+            <input matInput type="email" [placeholder]="parameter.placeholder || ''" [ngModel]="parameter.valeur" (ngModelChange)="onValueChange($event)" [disabled]="disabled" (blur)="markAsTouched()">
+          </ng-container>
+          <ng-container *ngSwitchCase="'password'">
+            <input matInput type="password" [placeholder]="parameter.placeholder || ''" [ngModel]="parameter.valeur" (ngModelChange)="onValueChange($event)" [disabled]="disabled" (blur)="markAsTouched()">
+          </ng-container>
+          <ng-container *ngSwitchCase="'tel'">
+            <input matInput type="tel" [placeholder]="parameter.placeholder || ''" [ngModel]="parameter.valeur" (ngModelChange)="onValueChange($event)" [disabled]="disabled" (blur)="markAsTouched()">
+          </ng-container>
+          <ng-container *ngSwitchCase="'search'">
+            <input matInput type="search" [placeholder]="parameter.placeholder || ''" [ngModel]="parameter.valeur" (ngModelChange)="onValueChange($event)" [disabled]="disabled" (blur)="markAsTouched()">
+          </ng-container>
+          <ng-container *ngSwitchCase="'url'">
+            <input matInput type="url" [placeholder]="parameter.placeholder || ''" [ngModel]="parameter.valeur" (ngModelChange)="onValueChange($event)" [disabled]="disabled" (blur)="markAsTouched()">
+          </ng-container>
+  
+          <!-- Number, Range -->
+          <ng-container *ngSwitchCase="'number'">
+            <input matInput type="number" [placeholder]="parameter.placeholder || ''" [ngModel]="parameter.valeur" (ngModelChange)="onValueChange($event)" [disabled]="disabled" (blur)="markAsTouched()">
+          </ng-container>
+          <ng-container *ngSwitchCase="'range'">
+            <input matInput type="range" [placeholder]="parameter.placeholder || ''" [ngModel]="parameter.valeur" (ngModelChange)="onValueChange($event)" [disabled]="disabled" (blur)="markAsTouched()">
+          </ng-container>
+  
+          <!-- Textarea -->
+          <ng-container *ngSwitchCase="'textarea'">
+            <textarea matInput [placeholder]="parameter.placeholder || ''"
+                      [ngModel]="parameter.valeur"
+                      (ngModelChange)="onValueChange($event)"
+                      cdkTextareaAutosize
+                      [disabled]="disabled"
+                      (blur)="markAsTouched()">
+            </textarea>
+          </ng-container>
+  
+          <!-- Select -->
+          <ng-container *ngSwitchCase="'select'">
+            <mat-select [(ngModel)]="parameter.valeur" (ngModelChange)="onValueChange($event)" [disabled]="disabled" (blur)="markAsTouched()">
+              <mat-option *ngFor="let option of parameter.options" [value]="option.value">
+                {{ option.label }}
+              </mat-option>
+            </mat-select>
+          </ng-container>
+  
+          <!-- Native Select -->
+          <ng-container *ngSwitchCase="'nativeSelect'">
+            <select matNativeControl [(ngModel)]="parameter.valeur" (ngModelChange)="onValueChange($event)" [disabled]="disabled" (blur)="markAsTouched()">
+              <option *ngFor="let option of parameter.options" [value]="option.value">
+                {{ option.label }}
+              </option>
+            </select>
+          </ng-container>
+  
+          <!-- Datepicker -->
+          <ng-container *ngSwitchCase="'datepicker'">
+            <input matInput [matDatepicker]="picker" [ngModel]="parameter.valeur" (ngModelChange)="onValueChange($event)" [disabled]="disabled" (blur)="markAsTouched()">
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+          </ng-container>
+  
+          <!-- Time -->
+          <ng-container *ngSwitchCase="'time'">
+            <input matInput type="time" [ngModel]="parameter.valeur" (ngModelChange)="onValueChange($event)" [disabled]="disabled" (blur)="markAsTouched()">
+          </ng-container>
+  
+          <!-- Datetime-local -->
+          <ng-container *ngSwitchCase="'datetime-local'">
+            <input matInput type="datetime-local" [ngModel]="parameter.valeur" (ngModelChange)="onValueChange($event)" [disabled]="disabled" (blur)="markAsTouched()">
+          </ng-container>
+  
+          <!-- Month -->
+          <ng-container *ngSwitchCase="'month'">
+            <input matInput type="month" [ngModel]="parameter.valeur" (ngModelChange)="onValueChange($event)" [disabled]="disabled" (blur)="markAsTouched()">
+          </ng-container>
+  
+          <!-- Week -->
+          <ng-container *ngSwitchCase="'week'">
+            <input matInput type="week" [ngModel]="parameter.valeur" (ngModelChange)="onValueChange($event)" [disabled]="disabled" (blur)="markAsTouched()">
+          </ng-container>
+  
+          <!-- Color -->
+          <ng-container *ngSwitchCase="'color'">
+            <input matInput type="color" [ngModel]="parameter.valeur" (ngModelChange)="onValueChange($event)" [disabled]="disabled" (blur)="markAsTouched()">
+          </ng-container>
+  
+          <!-- Chip -->
+          <ng-container *ngSwitchCase="'chip'">
+            <mat-chip-grid #chipGrid>
+              <mat-chip-row *ngFor="let value of parameter.valeur?.split(',') || []">
+                {{ value }}
+                <mat-icon matChipRemove [svgIcon]="'heroicons_solid:minus-circle'"></mat-icon>
+              </mat-chip-row>
+              <input [placeholder]="parameter.placeholder || ''" [matChipInputFor]="chipGrid" [ngModel]="parameter.valeur" (ngModelChange)="onValueChange($event)" [disabled]="disabled" (blur)="markAsTouched()">
+            </mat-chip-grid>
+          </ng-container>
+  
+          <!-- Checkbox -->
+          <ng-container *ngSwitchCase="'checkbox'">
+            <mat-checkbox [ngModel]="parameter.valeur" (ngModelChange)="onValueChange($event)" [disabled]="disabled" (blur)="markAsTouched()">
+              {{ parameter.placeholder || '' }}
+            </mat-checkbox>
+          </ng-container>
+  
+          <!-- Radio -->
+          <ng-container *ngSwitchCase="'radio'">
+            <mat-radio-group [(ngModel)]="parameter.valeur" (ngModelChange)="onValueChange($event)" [disabled]="disabled" (blur)="markAsTouched()">
+              <mat-radio-button *ngFor="let option of parameter.options" [value]="option.value">
+                {{ option.label }}
+              </mat-radio-button>
+            </mat-radio-group>
+          </ng-container>
+  
+          <!-- Slider -->
+          <ng-container *ngSwitchCase="'slider'">
+            <mat-slider [ngModel]="parameter.valeur" (ngModelChange)="onValueChange($event)" [disabled]="disabled" (blur)="markAsTouched()"></mat-slider>
+          </ng-container>
+  
+          <!-- Progress -->
+          <ng-container *ngSwitchCase="'progress'">
+            <mat-progress-bar [value]="parameter.valeur"></mat-progress-bar>
+          </ng-container>
+  
+          <!-- Vous pouvez ajouter ici d'autres cas si nécessaire -->
+
+        </ng-container>
+      </mat-form-field>
+    </ng-container>
+  
+    <!-- Template pour le cas switch (hors mat-form-field) -->
+    <ng-template #switchTemplate>
+        <div class="sm:col-span-4 flex items-center justify-between">
+            <div class="flex-auto cursor-pointer">
+            <div class="leading-6 font-medium">{{parameter.label}}</div>
+            <div class="text-md text-secondary"> {{parameter.placeholder}} </div>
+        </div>
+        <mat-slide-toggle class="ml-4" [color]="'primary'" 
+        [aria-label]="parameter.label || ''" [ngModel]="parameter.valeur === 'true'"
+        (ngModelChange)="onValueChange($event ? 'true' : 'false')"
+        [disabled]="disabled"
+        (blur)="markAsTouched()">
+        </mat-slide-toggle>
+      </div>
+    </ng-template>
+  
+  

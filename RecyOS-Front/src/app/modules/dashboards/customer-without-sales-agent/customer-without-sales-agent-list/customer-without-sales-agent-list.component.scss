@@ -1,0 +1,19 @@
+.dash-list-grid {
+    grid-template-columns: 48px auto 110px;
+
+    @screen sm {
+        grid-template-columns: 48px auto 110px;
+    }
+
+    @screen md {
+        grid-template-columns: 48px 330px 150px 120px;
+    }
+
+    @screen lg {
+        grid-template-columns: 48px 300px 250px 120px 250px 132px;
+    }
+
+    @screen xl {
+        grid-template-columns: 48px 300px 250px 120px 250px 132px 196px 132px 132px;
+    }
+}

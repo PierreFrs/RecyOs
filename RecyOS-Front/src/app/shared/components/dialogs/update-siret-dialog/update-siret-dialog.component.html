@@ -1,0 +1,24 @@
+<h1 class="text-4xl font-extrabold tracking-tight flex justify-center" mat-dialog-title>Mettre à jour le SIRET</h1>
+<div mat-dialog-content>
+    <mat-form-field class="w-full" appearance="fill">
+        <input [autocomplete]="'off'"
+               placeholder="Nouveau SIRET"
+               [formControl]="siretControl"
+               matInput>
+        <mat-error *ngIf="siretControl.hasError('required')">Un SIRET est requis</mat-error>
+        <mat-error *ngIf="siretControl.hasError('invalidSiret')">Le SIRET doit être un numéro valide à 14 chiffres</mat-error>
+        <mat-error *ngIf="siretControl.hasError('identifierUsed')">Le SIRET est déjà utilisé par un autre établissement.</mat-error>
+        <mat-error *ngIf="siretControl.hasError('updateFailed')">
+            {{ errorMessage }}
+        </mat-error>
+        <mat-hint *ngIf="siretControl.valid && !siretControl.hasError('identifierUsed')" style="color: green;">
+            Le SIRET est valide.
+        </mat-hint>
+    </mat-form-field>
+</div>
+<div mat-dialog-actions class="flex flex-row items-center justify-between">
+    <button mat-button (click)="onCancel()">Annuler</button>
+    <button mat-flat-button (click)="onUpdate()" color="primary" [disabled]="!isValid || isSubmitting">
+        Mettre à jour
+    </button>
+</div>

@@ -1,0 +1,7 @@
+<ng-container *ngIf="cover; else noCoverIcon">
+    <mat-icon class="text-green-600" *ngIf="cover.statut === 'Garantie totale'" [matTooltip]="'Garantie non-dénommée : Totale'" [svgIcon]="'feather:umbrella'"></mat-icon>
+    <mat-icon class="text-red-600" *ngIf="cover.statut === 'Pas de garantie'" [matTooltip]="'Garantie non-dénommée : Refusée'" [svgIcon]="'feather:umbrella'"></mat-icon>
+</ng-container>
+<ng-template #noCoverIcon>
+    <mat-icon [matTooltip]="'Garantie non-dénommée : Non Demandée'" [svgIcon]="'mat_solid:close'"></mat-icon>
+</ng-template>

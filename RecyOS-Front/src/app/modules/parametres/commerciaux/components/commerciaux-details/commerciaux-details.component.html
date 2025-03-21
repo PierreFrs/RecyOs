@@ -1,0 +1,153 @@
+<ng-container *ngIf="hasCommercialData !== false; else noCommercial">
+    <div class="flex flex-col p-3">
+        <div class="mt-3 text-4xl font-bold truncate">{{ commercialName }}</div>
+        <div class="flex sm:flex-col lg:flex-row w-full gap-4">
+            <div class="flex flex-col gap-4 max-w-160 sm:items-start w-full">
+                <!-- Nom Prénom -->
+                <div class="flex flex-row w-full">
+                    <app-input-field
+                        class="w-full"
+                        [label]="'Prénom'"
+                        [control]="firstnameControl"
+                        [readonly]="!userCanUpdateCommercial && !userIsAdmin"
+                        [errorMessages]="{ required: 'Le prénom est requis' }"
+                    ></app-input-field>
+                    <app-input-field
+                        class="w-full"
+                        [label]="'Nom'"
+                        [control]="lastnameControl"
+                        [readonly]="!userCanUpdateCommercial && !userIsAdmin"
+                        [errorMessages]="{
+                            required: 'Le nom de famille est requis'
+                        }"
+                    ></app-input-field>
+                </div>
+                <!-- Contact -->
+                <div class="flex flex-row w-full">
+                    <app-commercial-phone-input-field
+                        class="w-full"
+                        [label]="'Téléphone'"
+                        [control]="phoneControl"
+                        [readonly]="!userCanUpdateCommercial && !userIsAdmin"
+                        [errorMessages]="{
+                            required: 'Le numéro de téléphone est requis',
+                            pattern:
+                                'Le numéro de téléphone doit être composé de 10 chiffres'
+                        }"
+                    ></app-commercial-phone-input-field>
+                    <app-input-field
+                        class="w-full"
+                        [label]="'EMail'"
+                        [control]="emailControl"
+                        [readonly]="!userCanUpdateCommercial && !userIsAdmin"
+                        [errorMessages]="{
+                            required: 'L\'adresse email est requise',
+                            email: 'L\'adresse email n\'est pas valide'
+                        }"
+                    ></app-input-field>
+                </div>
+                <!-- MKGT -->
+                <div class="flex flex-row w-full">
+                    <app-input-field
+                        class="w-full"
+                        [label]="'Nom d\'utilisateur MKGT'"
+                        [control]="usernameControl"
+                        [readonly]="!userCanUpdateCommercial && !userIsAdmin"
+                        [errorMessages]="{
+                            required: 'Le nom d\'utilisateur MKGT est requis'
+                        }"
+                    ></app-input-field>
+                    <app-input-field
+                        class="w-full"
+                        [label]="'Code MKGT'"
+                        [control]="codeMkgtControl"
+                        [readonly]="!userCanUpdateCommercial && !userIsAdmin"
+                        [errorMessages]="{
+                            required: 'L\'identifiant MKGT est requis',
+                            minlength:
+                                'L\'identifiant MKGT doit être composé de deux caractères',
+                            maxlength:
+                                'L\'identifiant MKGT doit être composé de deux caractères'
+                        }"
+                    ></app-input-field>
+                </div>
+            </div>
+            <div class="flex flex-col gap-4 max-w-80 sm:items-start w-full">
+                <div class="flex flex-row w-full">
+                    <!-- Id HubSpot -->
+                    <app-input-field
+                        class="w-full"
+                        [label]="'Identifiant HubSpot'"
+                        [control]="idHubSpotControl"
+                        [readonly]="!userCanUpdateCommercial && !userIsAdmin"
+                        [errorMessages]="{
+                            minlength:
+                                'L\'identifiant HubSpot doit être composé de neuf caractères',
+                            maxlength:
+                                'L\'identifiant HubSpot doit être composé de neuf caractères'
+                        }"
+                    ></app-input-field>
+                </div>
+            </div>
+        </div>
+        <!-- Actions -->
+        <div
+            class="flex items-center justify-end gap-4 w-full border-t px-8 py-4"
+        >
+            <div class="flex items-center">
+                <div *ngIf="flashMessage" class="flex items-center mr-4">
+                    <ng-container *ngIf="flashMessage === 'success'">
+                        <mat-icon
+                            class="text-green-500"
+                            [svgIcon]="'heroicons_outline:check'"
+                        ></mat-icon>
+                        <span class="ml-2">Commercial mis à jour</span>
+                    </ng-container>
+                    <ng-container *ngIf="flashMessage === 'error'">
+                        <mat-icon
+                            class="text-red-500"
+                            [svgIcon]="'heroicons_outline:x'"
+                        ></mat-icon>
+                        <span class="ml-2"
+                            >Une erreur est survenue lors de la mise à jour
+                            !</span
+                        >
+                    </ng-container>
+                </div>
+                <button
+                    mat-flat-button
+                    [color]="'primary'"
+                    (click)="updateCommercial()"
+                    [disabled]="
+                        !userCanUpdateCommercial ||
+                        (selectedCommercialForm.invalid && !userIsAdmin)
+                    "
+                >
+                    Mettre à jour
+                </button>
+            </div>
+            <div class="flex items-center">
+                <button
+                    mat-flat-button
+                    [color]="'warn'"
+                    (click)="deleteCommercial()"
+                    [disabled]="!userCanDeleteCommercial || !userIsAdmin"
+                >
+                    Supprimer
+                </button>
+            </div>
+        </div>
+    </div>
+</ng-container>
+
+<ng-template #noCommercial>
+    <div class="flex flex-col items-center justify-center h-full">
+        <mat-icon
+            [svgIcon]="'heroicons_outline:search'"
+            class="text-6xl"
+        ></mat-icon>
+        <div class="text-2xl">
+            Aucune donnée dans la base commerciaux disponnible
+        </div>
+    </div>
+</ng-template>

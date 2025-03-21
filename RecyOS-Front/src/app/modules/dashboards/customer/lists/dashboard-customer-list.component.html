@@ -1,0 +1,95 @@
+<div class="sm:absolute sm:inset-0 flex flex-col flex-auto min-w-0 sm:overflow-hidden bg-card dark:bg-transparent">
+
+    <!-- Header -->
+    <div class="relative flex flex-col sm:flex-row flex-0 sm:items-center sm:justify-between py-4 px-4 md:px-4 border-b">
+        <!-- Loader -->
+        <div
+            *ngIf="isLoading"
+            class="absolute inset-x-0 bottom-0">
+            <mat-progress-bar [mode]="'indeterminate'"></mat-progress-bar>
+        </div>
+        <!-- Title -->
+        <div class="text-4xl font-extrabold tracking-tight">{{title}}</div>
+    </div>
+
+    <!-- Main -->
+    <div class="flex flex-auto overflow-hidden">
+        <!-- Liste des entreprises -->
+        <div class="flex flex-col flex-auto sm:mb-18 overflow-hidden sm:overflow-y-auto">
+            <ng-container *ngIf="(etablissementsClient$ | async) as etablissements; else noEtablissement">
+                <ng-container *ngIf="etablissements.length > 0; else noEtablissement">
+                    <div class="grid">
+                        <div
+                            class="dash-list-grid z-10 sticky top-0 grid gap-4 py-4 px-6 md:px-8 shadow text-md font-semibold text-secondary bg-gray-50 dark:bg-black dark:bg-opacity-5"
+                            matSort
+                            matSortDisableClear>
+                            <div>Détails</div>
+                            <div [mat-sort-header]="'nom'">Nom</div>
+                            <div [mat-sort-header]="'ville'">Ville</div>
+                            <div class="hidden md:block" [mat-sort-header]="'Siret'">SIRET</div>
+                            <div class="hidden lg:block">E-mail</div>
+                            <div class="hidden lg:block">Téléphone</div>
+                            <div class="hidden xl:block" [mat-sort-header]="'CodeMkgt'">Code MKGT</div>
+                        </div>
+                        <!-- Rows -->
+                        <ng-container *ngIf="(etablissementsClient$ | async) as etablissements">
+                            <ng-container *ngFor="let etablissement of etablissementsClients; trackBy: trackByFn">
+                                <div class="dash-list-grid grid items-center gap-4 py-1 px-6 md:px-8 border-b">
+                                    <div class="flex items-center">
+                                        <div class="relative flex flex-0 items-center justify-center w-12 h-12 mr-6 rounded overflow-hidden">
+                                            <div>
+                                                <button
+                                                    (click)="toggleDetails(etablissement)"
+                                                    class="min-w-10 min-h-7 h-7 px-2 leading-6"
+                                                    mat-stroked-button>
+                                                    <mat-icon
+                                                        [svgIcon]="selectedEtablissementId === etablissement.id ? 'heroicons_solid:chevron-up' : 'heroicons_solid:chevron-down'"
+                                                        class="icon-size-5"></mat-icon>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div>{{etablissement.nom}}</div>
+                                    <div>{{etablissement.villeFacturation}}</div>
+                                    <div class="hidden md:block">{{etablissement.siret}}</div>
+                                    <div class="hidden lg:block">{{etablissement.emailFacturation}}</div>
+                                    <div class="hidden lg:block">{{etablissement.telephoneFacturation}}</div>
+                                    <div class="hidden xl:block">{{etablissement.codeMkgt}}</div>
+                                </div>
+                                <div class="grid">
+                                    <ng-container *ngIf="selectedEtablissementId === etablissement.id">
+                                        <ng-container *ngTemplateOutlet="rowDetailsTemplate; context: {$implicit: etablissement}"></ng-container>
+                                    </ng-container>
+                                </div>
+                            </ng-container>
+                        </ng-container>
+                    </div>
+                </ng-container>
+            </ng-container>
+            <mat-paginator
+                [length]="pagination.length"
+                [ngClass]="{'pointer-events-none': isLoading}"
+                [pageIndex]="pagination.page"
+                [pageSizeOptions]="[5, 10, 25, 100]"
+                [pageSize]="pagination.size"
+                [showFirstLastButtons]="true"
+                class="sm:absolute sm:inset-x-0 sm:bottom-0 border-b sm:border-t sm:border-b-0 z-10 bg-gray-50 dark:bg-transparent"
+            >
+            </mat-paginator>
+
+            <ng-template #rowDetailsTemplate>
+                <app-entity-details [entities]="etablissementsClients"
+                                    [selectedEntity]="selectedEntity"
+                ></app-entity-details>
+            </ng-template>
+            <ng-template #noEtablissement>
+                <div class="flex flex-col items-center justify-center flex-auto">
+                    <div class="flex flex-col items-center justify-center">
+                        <mat-icon [svgIcon]="'heroicons_outline:search'" class="text-4xl"></mat-icon>
+                        <div class="text-4xl font-semibold tracking-tight">Aucun établissement</div>
+                    </div>
+                </div>
+            </ng-template>
+        </div>
+    </div>
+</div>

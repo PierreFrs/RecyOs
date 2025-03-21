@@ -1,0 +1,104 @@
+<div
+    class="w-full flex flex-col lg:flex-row"
+    [formGroup]="billingInfosFormGroup"
+>
+    <!-- Colonne 1 -->
+    <div class="flex flex-col w-full sm:pl-1">
+        <!-- Conditions client -->
+        <app-select-field
+            class="w-full h-24"
+            label="Conditions de règlement"
+            [control]="conditionReglementControl"
+            [options]="[
+                { value: 0, label: 'En compte' },
+                { value: 1, label: 'Paiement comptant' },
+                { value: 2, label: 'Factor' }
+            ]"
+            errorMessage="Les conditions de règlement sont obligatoires"
+            data-cy="conditions-reglement"
+        >
+        </app-select-field>
+        <!-- Mode de règlement -->
+        <app-select-field
+            class="w-full h-24"
+            label="Mode de règlement"
+            [control]="modeReglementControl"
+            [options]="[
+                { value: 0, label: 'Virement' },
+                { value: 1, label: 'LCR' },
+                { value: 2, label: 'Chèque' },
+                { value: 3, label: 'Espèce' },
+                { value: 4, label: 'Carte bancaire' }
+            ]"
+            errorMessage="Le mode de règlement est obligatoire"
+            data-cy="mode-reglement"
+        >
+        </app-select-field>
+        <!-- Délais de règlement -->
+        <app-select-field
+            class="w-full h-24"
+            label="Délais de règlement (jours)"
+            [control]="delaiReglementControl"
+            [options]="[
+                { value: 0, label: '0' },
+                { value: 30, label: '30' },
+                { value: 45, label: '45' },
+                { value: 60, label: '60' }
+            ]"
+            errorMessage="Le délais de règlement est obligatoire"
+            data-cy="delais-reglement"
+        >
+        </app-select-field>
+    </div>
+    <!-- Colonne 2 -->
+    <div class="flex flex-col w-full sm:pl-1">
+        <!-- selection du taux de TVA -->
+        <app-select-field
+            class="w-full h-24"
+            label="Taux TVA"
+            [control]="tauxTvaControl"
+            [options]="tauxTvaOptions"
+            errorMessage="Le taux TVA est obligatoire (20 par défaut)"
+            data-cy="taux-tva"
+        >
+        </app-select-field>
+        <!-- Renseignement du compte comptable -->
+        <app-input-field
+            class="w-full h-24"
+            label="Compte comptable vente"
+            [type]="'text'"
+            [control]="compteComptableControl"
+            [errorMessages]="{ required: '411000 par défaut' }"
+            data-cy="compte-comptable"
+        >
+        </app-input-field>
+        <!-- Encours Max -->
+        <app-select-field
+            class="w-full h-24"
+            label="Encours maximum"
+            [control]="encoursMaxControl"
+            [options]="[
+                { value: 0, label: '0' },
+                { value: 1000, label: '1 000' },
+                { value: 2500, label: '2 500' },
+                { value: 5000, label: '5 000' },
+                { value: 7500, label: '7 500' },
+                { value: 10000, label: '10 000' },
+                { value: 15000, label: '15 000' },
+                { value: 20000, label: '20 000' },
+                { value: 25000, label: '25 000' },
+                { value: 30000, label: '30 000' },
+                { value: 40000, label: '40 000' },
+                { value: 50000, label: '50 000' },
+                { value: 60000, label: '60 000' },
+                { value: 70000, label: '70 000' },
+                { value: 80000, label: '80 000' },
+                { value: 90000, label: '90 000' },
+                { value: 100000, label: '100 000' }
+            ]"
+            errorMessage="Vous devez définir un encours maximum"
+            data-cy="encours-max"
+        >
+        </app-select-field>
+    </div>
+</div>

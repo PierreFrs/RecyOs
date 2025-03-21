@@ -1,0 +1,498 @@
+<div class="mt-3 ml-16 w-48 flex items-center gap-6">
+    <img src="../../../../../../assets/images/allianz-trade/allianz-trade-logo.svg" alt="allianz-trade logo">
+    <app-nd-cover-status [cover]="entrepriseBaseClient?.entrepriseNDCover"></app-nd-cover-status>
+</div>
+<ng-container *ngIf="entrepriseCouverture; else noData">
+    <div class="flex flex-col sm:flex-row pl-16">
+        <div class="flex flex-auto flex-wrap">
+            <div class="flex flex-col w-full sm:pl-1">
+                <h2 class="mt-5 pt-1 mb-2.5 text-3xl font-bold truncate border-t">Garantie dénommée :</h2>
+                <div class="flex sm:items-start">
+                    <!--Colonne identification client-->
+                    <div class="flex flex-col lg:w-1/3 sm:pl-1">
+                        <div class="mt-3 mb-2 text-2xl font-bold truncate">Identification</div>
+                        <!-- SIREN -->
+                        <div class="flex flex-row">
+                            <div class="flex flex-col lg:w-1/8">
+                                <mat-icon [svgIcon]="'heroicons_outline:office-building'"
+                                          [matTooltip]="'Entreprise - SIREN'"></mat-icon>
+                            </div>
+                            <div class="flex flex-col lg:w-7/8">
+                                <div class="ml-6 leading-6">{{entrepriseCouverture.raisonSociale}} - {{entrepriseCouverture.typeIdentifiant}} : {{ entrepriseCouverture.siren | formatSiren:entrepriseCouverture.typeIdentifiant }}
+                                    <ng-container *ngIf="entrepriseCouverture.statutEntreprise == 'Actif'">
+                                        <mat-icon
+                                            class="icon-size-5 text-green-600"
+                                            [svgIcon]="'heroicons_solid:badge-check'"
+                                            [matTooltip]="'Entreprise Active'"></mat-icon>
+                                    </ng-container>
+                                    <ng-container *ngIf="entrepriseCouverture.statutEntreprise == 'Clôturé'">
+                                        <mat-icon
+                                            class="icon-size-5 text-red-600"
+                                            [svgIcon]="'heroicons_solid:x-circle'"
+                                            [matTooltip]="'Entreprise Cessée'"></mat-icon>
+                                    </ng-container>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Référence Client -->
+                        <div class="flex flex-row" *ngIf="entrepriseCouverture.referenceClient">
+                            <div class="flex flex-col lg:w-1/8">
+                                <mat-icon [svgIcon]="'heroicons_outline:identification'"
+                                          [matTooltip]="'Référence Client'"></mat-icon>
+                            </div>
+                            <div class="flex flex-col lg:w-7/8">
+                                <div class="ml-6 leading-6">{{entrepriseCouverture.referenceClient}}</div>
+                            </div>
+                        </div>
+                        <!-- Identifiant de couverture -->
+                        <div class="flex flex-row">
+                            <div class="flex flex-col lg:w-1/8">
+                                <mat-icon [svgIcon]="'heroicons_outline:identification'"
+                                          [matTooltip]="'Identifiant de couverture'"></mat-icon>
+                            </div>
+                            <div class="flex flex-col lg:w-7/8">
+                                <div class="ml-6 leading-6">{{entrepriseCouverture.coverId }}</div>
+                            </div>
+                        </div>
+                        <!-- Identifiant Euler Hermes -->
+                        <div class="flex flex-row">
+                            <div class="flex flex-col lg:w-1/8">
+                                <mat-icon [svgIcon]="'heroicons_outline:identification'"
+                                          [matTooltip]="'Identifiant Euler Hermes'"></mat-icon>
+                            </div>
+                            <div class="flex flex-col lg:w-7/8">
+                                <div class="ml-6 leading-6">{{entrepriseCouverture.ehId}}</div>
+                            </div>
+                        </div>
+                        <!-- Adresse Client -->
+                        <div class="flex flex-row">
+                            <div class="flex flex-col lg:w-1/8">
+                                <mat-icon [svgIcon]="'mat_solid:location_on'"
+                                          [matTooltip]="'Adresse Client'"></mat-icon>
+                            </div>
+                            <div class="flex flex-col lg:w-7/8">
+                                <div class="ml-6 leading-6">
+                                    {{entrepriseCouverture.nomRue}}<br>
+                                    {{entrepriseCouverture.codePostal}},
+                                    {{entrepriseCouverture.ville}}<br>
+                                    {{entrepriseCouverture.pays}}
+                                    <span *ngIf="entrepriseCouverture.etatRegionPays"> -
+                                    {{entrepriseCouverture.etatRegionPays}}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Notation -->
+                        <div class="flex flex-row">
+                            <div class="flex flex-col lg:w-1/8">
+                                <mat-icon [svgIcon]="'heroicons_outline:star'"
+                                          [matTooltip]="'Notation'"></mat-icon>
+                            </div>
+                            <div class="flex flex-col lg:w-7/8">
+                                <div class="ml-6 leading-6"><span [ngClass]="(entrepriseCouverture.notation | trimZero) | color">{{entrepriseCouverture.notation | trimZero}}</span><span *ngIf="entrepriseCouverture.dateAttributionNotation"> - En date du {{entrepriseCouverture.dateAttributionNotation | date:'dd/MM/yyyy'}}</span></div>
+                            </div>
+                        </div>
+                        <!-- Numéro de Contrat primaire et secondaire -->
+                        <div class="flex flex-row">
+                            <div class="flex flex-col lg:w-1/8">
+                                <mat-icon [svgIcon]="'heroicons_outline:newspaper'"
+                                          [matTooltip]="'Numéro de Contrat primaire et secondaire'"></mat-icon>
+                            </div>
+                            <div class="flex flex-col lg:w-7/8">
+                                <div class="ml-6 leading-6">Primaire: {{entrepriseCouverture.numeroContratPrimaire}},<br><span *ngIf="entrepriseCouverture.numeroContratExtension">Extension: {{entrepriseCouverture.numeroContratExtension}}</span></div>
+                            </div>
+                        </div>
+                        <!-- Cover Group Role -->
+                        <div class="flex flex-row" *ngIf="entrepriseCouverture.coverGroupRole">
+                            <div class="flex flex-col lg:w-1/8">
+                                <mat-icon [svgIcon]="'heroicons_outline:user'"
+                                          [matTooltip]="'Cover Group Role'"></mat-icon>
+                            </div>
+                            <div class="flex flex-col lg:w-7/8">
+                                <div class="ml-6 leading-6">{{entrepriseCouverture.coverGroupRole}}</div>
+                            </div>
+                        </div>
+                        <!-- Cover Group Id -->
+                        <div class="flex flex-row" *ngIf="entrepriseCouverture.coverGroupId">
+                            <div class="flex flex-col lg:w-1/8">
+                                <mat-icon [svgIcon]="'heroicons_outline:identification'"
+                                          [matTooltip]="'Cover Group Id'"></mat-icon>
+                            </div>
+                            <div class="flex flex-col lg:w-7/8">
+                                <div class="ml-6 leading-6">{{entrepriseCouverture.coverGroupId}}</div>
+                            </div>
+                        </div>
+                        <!-- Date de l'extraction -->
+                        <div class="flex flex-row">
+                            <div class="flex flex-col lg:w-1/8">
+                                <mat-icon [svgIcon]="'heroicons_outline:annotation'"
+                                          [matTooltip]="'Date de l\'extraction'"></mat-icon>
+                            </div>
+                            <div class="flex flex-col lg:w-7/8">
+                                <div class="ml-6 leading-6">{{entrepriseCouverture.dateExtraction | date: 'dd/MM/yyyy'}}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--Colonne demande-->
+                    <div class="flex flex-col lg:w-1/3 sm:pl-1">
+                        <div class="mt-3 mb-2 text-2xl font-bold truncate">Demande</div>
+                        <!-- Montant Demandé -->
+                        <div class="flex flex-row" *ngIf="entrepriseCouverture.montantDemande">
+                            <div class="flex flex-col lg:w-1/8">
+                                <mat-icon [svgIcon]="'heroicons_outline:currency-dollar'"
+                                          [matTooltip]="'montant demandé'"></mat-icon>
+                            </div>
+                            <div class="flex flex-col lg:w-7/8">
+                                <div class="ml-6 leading-6">{{entrepriseCouverture.montantDemande | number:'1.0-0'}} {{entrepriseCouverture.deviseDemandee}} - Le {{entrepriseCouverture.dateDemande | date:'dd/MM/yyyy'}}</div>
+                            </div>
+                        </div>
+                        <!-- Nom du Demandeur -->
+                        <div class="flex flex-row" *ngIf="entrepriseCouverture.demandeur">
+                            <div class="flex flex-col lg:w-1/8">
+                                <mat-icon [svgIcon]="'heroicons_outline:user'"
+                                          [matTooltip]="'Demandeur'"></mat-icon>
+                            </div>
+                            <div class="flex flex-col lg:w-7/8">
+                                <div class="ml-6 leading-6">{{entrepriseCouverture.demandeur}}</div>
+                            </div>
+                        </div>
+                        <!-- Date de la demande -->
+                        <div class="flex flex-row">
+                            <div class="flex flex-col lg:w-1/8">
+                                <mat-icon [svgIcon]="'heroicons_outline:calendar'"
+                                          [matTooltip]="'Date de la demande'"></mat-icon>
+                            </div>
+                            <div class="flex flex-col lg:w-7/8">
+                                <div class="ml-6 leading-6">{{entrepriseCouverture.dateDemande | date:'dd/MM/yyyy'}}</div>
+                            </div>
+                        </div>
+                        <!-- Délai de paiement spécifique -->
+                        <div class="flex flex-row" *ngIf="entrepriseCouverture.delaiPaiementSpecifique">
+                            <div class="flex flex-col lg:w-1/8">
+                                <mat-icon
+                                        [svgIcon]="'heroicons_outline:calendar'"
+                                        [matTooltip]="'Délai de paiement spécifique'"
+                                ></mat-icon>
+                            </div>
+                            <div class="flex flex-col lg:w-7/8">
+                                <div class="ml-6 leading-6">{{entrepriseCouverture.delaiPaiementSpecifique}} jours</div>
+                            </div>
+                        </div>
+                        <!-- Date d'effet différé -->
+                        <div class="flex flex-row" *ngIf="entrepriseCouverture.dateEffetDiffere">
+                            <div class="flex flex-col lg:w-1/8">
+                                <mat-icon
+                                        [svgIcon]="'heroicons_outline:calendar'"
+                                        [matTooltip]="'Date d\'effet différé'"
+                                ></mat-icon>
+                            </div>
+                            <div class="flex flex-col lg:w-7/8">
+                                <div class="ml-6 leading-6">{{entrepriseCouverture.dateEffetDiffere | date:'dd/MM/yyyy'}}</div>
+                            </div>
+                        </div>
+                        <!-- Montant temporaire -->
+                        <div class="flex flex-row" *ngIf="entrepriseCouverture.montantTemporaire">
+                            <div class="flex flex-col lg:w-1/8">
+                                <mat-icon
+                                        [svgIcon]="'heroicons_outline:currency-dollar'"
+                                        [matTooltip]="'Montant temporaire'"
+                                ></mat-icon>
+                            </div>
+                            <div class="flex flex-col lg:w-7/8">
+                                <div class="ml-6 leading-6">{{entrepriseCouverture.montantTemporaire}} {{entrepriseCouverture.deviseMontantTemporaire}} jusqu'au {{entrepriseCouverture.dateExpirationMontantTemporaire | date: 'dd/MM/yyyy'}}</div>
+                            </div>
+                        </div>
+                        <!-- Délai de paiement du montant temporaire -->
+                        <div class="flex flex-row" *ngIf="entrepriseCouverture.delaiPaiementMontantTemporaire">
+                            <div class="flex flex-col lg:w-1/8">
+                                <mat-icon
+                                        [svgIcon]="'heroicons_outline:calendar'"
+                                        [matTooltip]="'Délai de paiement du montant temporaire'"
+                                ></mat-icon>
+                            </div>
+                            <div class="flex flex-col lg:w-7/8">
+                                <div class="ml-6 leading-6">{{entrepriseCouverture.delaiPaiementMontantTemporaire}}</div>
+                            </div>
+                        </div>
+                        <!-- Conditions de paiement demandées -->
+                        <div class="flex flex-row" *ngIf="entrepriseCouverture.conditionsPaiementDemandees">
+                            <div class="flex flex-col lg:w-1/8">
+                                <mat-icon
+                                        [svgIcon]="'heroicons_outline:check'"
+                                        [matTooltip]="'Conditions de paiement demandées'"
+                                ></mat-icon>
+                            </div>
+                            <div class="flex flex-col lg:w-7/8">
+                                <div class="ml-6 leading-6">{{entrepriseCouverture.conditionsPaiementDemandees}}</div>
+                            </div>
+                        </div>
+                        <!-- Date d'expiration demandée -->
+                        <div class="flex flex-row" *ngIf="entrepriseCouverture.dateExpirationDemandee">
+                            <div class="flex flex-col lg:w-1/8">
+                                <mat-icon
+                                        [svgIcon]="'heroicons_outline:calendar'"
+                                        [matTooltip]="'Délai de paiement du montant temporaire'"
+                                ></mat-icon>
+                            </div>
+                            <div class="flex flex-col lg:w-7/8">
+                                <div class="ml-6 leading-6">{{entrepriseCouverture.dateExpirationDemandee | date: 'dd/MM/yyyy'}}</div>
+                            </div>
+                        </div>
+                        <!-- Montant temporaire demandé -->
+                        <div class="flex flex-row" *ngIf="entrepriseCouverture.montantTemporaireDemande">
+                            <div class="flex flex-col lg:w-1/8">
+                                <mat-icon
+                                        [svgIcon]="'attach_money'"
+                                        [matTooltip]="'Montant temporaire demandé'"
+                                ></mat-icon>
+                            </div>
+                            <div class="flex flex-col lg:w-7/8">
+                                <div class="ml-6 leading-6">{{entrepriseCouverture.montantTemporaireDemande}} {{entrepriseCouverture.deviseMontantTemporaire}}</div>
+                            </div>
+                        </div>
+                        <!-- Numéro de la demande -->
+                        <div class="flex flex-row" *ngIf="entrepriseCouverture.numeroDemande">
+                            <div class="flex flex-col lg:w-1/8">
+                                <mat-icon
+                                        [svgIcon]="'confirmation_number'"
+                                        [matTooltip]="'Numéro de la demande'"
+                                ></mat-icon>
+                            </div>
+                            <div class="flex flex-col lg:w-7/8">
+                                <div class="ml-6 leading-6">{{entrepriseCouverture.numeroDemande}}</div>
+                            </div>
+                        </div>
+                        <!-- Identification de la demande -->
+                        <div class="flex flex-row" *ngIf="entrepriseCouverture.idDemande">
+                            <div class="flex flex-col lg:w-1/8">
+                                <mat-icon
+                                        [svgIcon]="'heroicons_outline:identification'"
+                                        [matTooltip]="'Identification de la demande'"
+                                ></mat-icon>
+                            </div>
+                            <div class="flex flex-col lg:w-7/8">
+                                <div class="ml-6 leading-6">{{entrepriseCouverture.idDemande}}</div>
+                            </div>
+                        </div>
+                        <!-- Date de la demande de montant temporaire -->
+                        <div class="flex flex-row" *ngIf="entrepriseCouverture.dateDemandeMontantTemporaire">
+                            <div class="flex flex-col lg:w-1/8">
+                                <mat-icon
+                                        [svgIcon]="'heroicons_outline:calendar'"
+                                        [matTooltip]="'Date de la demande de montant temporaire'"
+                                ></mat-icon>
+                            </div>
+                            <div class="flex flex-col lg:w-7/8">
+                                <div class="ml-6 leading-6">{{entrepriseCouverture.dateDemandeMontantTemporaire | date: 'dd/MM/yyyy'}}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Colonne réponse -->
+                    <div class="flex flex-col lg:w-1/3 sm:pr-1">
+                        <div class="mt-3 mb-2 text-2xl font-bold truncate">Réponse</div>
+                        <!-- Heure et temps de réponse -->
+                        <div class="flex flex-row" *ngIf="entrepriseCouverture.heureReponse">
+                            <div class="flex flex-col lg:w-1/8">
+                                <mat-icon
+                                        [svgIcon]="'watch_later'"
+                                        [matTooltip]="'Heure et temps de réponse'"
+                                ></mat-icon>
+                            </div>
+                            <div class="flex flex-col lg:w-7/8">
+                                <div class="ml-6 leading-6">{{entrepriseCouverture.heureReponse}} en {{entrepriseCouverture.tempsReponse}}</div>
+                            </div>
+                        </div>
+                        <!-- Montant Accordé -->
+                        <div class="flex flex-row">
+                            <div class="flex flex-col lg:w-1/8">
+                                <mat-icon [svgIcon]="'heroicons_outline:currency-dollar'"
+                                          [matTooltip]="'Montant accordé'"></mat-icon>
+                            </div>
+                            <div class="flex flex-col lg:w-7/8">
+                                <div class="ml-6 leading-6">{{entrepriseCouverture.montantGarantie | number:'1.0-0'}} {{entrepriseCouverture.deviseGarantie}}</div>
+                            </div>
+                        </div>
+                        <!-- Type de garantie -->
+                        <div class="flex flex-row">
+                            <div class="flex flex-col lg:w-1/8">
+                                <mat-icon [matTooltip]="'Type de garantie'">workspace_premium</mat-icon>
+                            </div>
+                            <div class="flex flex-col lg:w-7/8">
+                                <div class="ml-6 leading-6">{{entrepriseCouverture.typeGarantie}}</div>
+                            </div>
+                        </div>
+                        <!-- Type de la réponse -->
+                        <div class="flex flex-row">
+                            <div class="flex flex-col lg:w-1/8">
+                                <mat-icon [svgIcon]="'gavel'"
+                                          [matTooltip]="'Type de la réponse'"></mat-icon>
+                            </div>
+                            <div class="flex flex-col lg:w-7/8">
+                                <div class="ml-6 leading-6">{{entrepriseCouverture.typeReponse}}</div>
+                            </div>
+                        </div>
+                        <!-- Montant de la garantie -->
+                        <div class="flex flex-row">
+                            <div class="flex flex-col lg:w-1/8">
+                                <mat-icon [svgIcon]="'heroicons_outline:currency-dollar'"
+                                          [matTooltip]="'Montant de la garantie'"></mat-icon>
+                            </div>
+                            <div class="flex flex-col lg:w-7/8">
+                                <div class="ml-6 leading-6">{{entrepriseCouverture.montantGarantie}} {{entrepriseCouverture.deviseGarantie}}</div>
+                            </div>
+                        </div>
+                        <!-- Quotité garantie -->
+                        <div class="flex flex-row" *ngIf="entrepriseCouverture.quotiteGarantie">
+                            <div class="flex flex-col lg:w-1/8">
+                                <mat-icon
+                                        [matTooltip]="'Quotité garantie'"
+                                >percent</mat-icon>
+                            </div>
+                            <div class="flex flex-col lg:w-7/8">
+                                <div class="ml-6 leading-6">{{entrepriseCouverture.quotiteGarantie}}</div>
+                            </div>
+                        </div>
+                        <!-- Reprise de garantie possible -->
+                        <div class="flex flex-row" *ngIf="entrepriseCouverture.repriseGarantiePossible">
+                            <div class="flex flex-col lg:w-1/8">
+                                <mat-icon
+                                        [svgIcon]="'recycling'"
+                                        [matTooltip]="'Reprise de garantie possible'">cycle</mat-icon>
+                            </div>
+                            <div class="flex flex-col lg:w-7/8">
+                                <div class="ml-6 leading-6">{{entrepriseCouverture.repriseGarantiePossible}}</div>
+                            </div>
+                        </div>
+                        <!-- Date d'expiration de la garantie -->
+                        <div class="flex flex-row" *ngIf="entrepriseCouverture.dateExpirationGarantie">
+                            <div class="flex flex-col lg:w-1/8">
+                                <mat-icon
+                                        [svgIcon]="'heroicons_outline:calendar'"
+                                        [matTooltip]="'Date d\'expiration de la garantie'"
+                                ></mat-icon>
+                            </div>
+                            <div class="flex flex-col lg:w-7/8">
+                                <div class="ml-6 leading-6">{{entrepriseCouverture.dateExpirationGarantie | date:'dd/MM/yyyy'}}</div>
+                            </div>
+                        </div>
+                        <!-- Quotité garantie montant temporaire -->
+                        <div class="flex flex-row" *ngIf="entrepriseCouverture.quotiteGarantieMontantTemporaire">
+                            <div class="flex flex-col lg:w-1/8">
+                                <mat-icon
+                                        [matTooltip]="'Quotité garantie montant temporaire'"
+                                >percent</mat-icon>
+                            </div>
+                            <div class="flex flex-col lg:w-7/8">
+                                <div class="ml-6 leading-6">{{entrepriseCouverture.quotiteGarantieMontantTemporaire}}</div>
+                            </div>
+                        </div>
+                        <!-- Conditions spécifiques -->
+                        <div class="flex flex-row" *ngIf="entrepriseCouverture.conditionsSpecifiques">
+                            <div class="flex flex-col lg:w-1/8">
+                                <mat-icon [svgIcon]="'heroicons_solid:check'"
+                                          [matTooltip]="'Conditions spécifiques'"></mat-icon>
+                            </div>
+                            <div class="flex flex-col lg:w-7/8">
+                                <div class="ml-6 leading-6">{{entrepriseCouverture.conditionsSpecifiques}}</div>
+                            </div>
+                        </div>
+                        <!-- Autre conditions 1 -->
+                        <div class="flex flex-row" *ngIf="entrepriseCouverture.autresConditions1">
+                            <div class="flex flex-col lg:w-1/8">
+                                <mat-icon [svgIcon]="'heroicons_solid:check'"
+                                          [matTooltip]="'Autre condition 1'"></mat-icon>
+                            </div>
+                            <div class="flex flex-col lg:w-7/8">
+                                <div class="ml-6 leading-6">{{entrepriseCouverture.autresConditions1}}</div>
+                            </div>
+                        </div>
+                        <!-- Autre conditions 2 -->
+                        <div class="flex flex-row" *ngIf="entrepriseCouverture.autresConditions2">
+                            <div class="flex flex-col lg:w-1/8">
+                                <mat-icon [svgIcon]="'heroicons_solid:check'"
+                                          [matTooltip]="'Autre condition 2'"></mat-icon>
+                            </div>
+                            <div class="flex flex-col lg:w-7/8">
+                                <div class="ml-6 leading-6">{{entrepriseCouverture.autresConditions2}}</div>
+                            </div>
+                        </div>
+                        <!-- Autre conditions 3 -->
+                        <div class="flex flex-row" *ngIf="entrepriseCouverture.autresConditions3">
+                            <div class="flex flex-col lg:w-1/8">
+                                <mat-icon [svgIcon]="'heroicons_solid:check'"
+                                          [matTooltip]="'Autre condition 3'"></mat-icon>
+                            </div>
+                            <div class="flex flex-col lg:w-7/8">
+                                <div class="ml-6 leading-6">{{entrepriseCouverture.autresConditions3}}</div>
+                            </div>
+                        </div>
+                        <!-- Autre conditions 4 -->
+                        <div class="flex flex-row" *ngIf="entrepriseCouverture.autresConditions4">
+                            <div class="flex flex-col lg:w-1/8">
+                                <mat-icon [svgIcon]="'heroicons_solid:check'"
+                                          [matTooltip]="'Autre condition 4'"></mat-icon>
+                            </div>
+                            <div class="flex flex-col lg:w-7/8">
+                                <div class="ml-6 leading-6">{{entrepriseCouverture.autresConditions4}}</div>
+                            </div>
+                        </div>
+                        <!-- Autres conditions temporaires -->
+                        <div class="flex flex-row" *ngIf="entrepriseCouverture.autresConditionsTemporaires">
+                            <div class="flex flex-col lg:w-1/8">
+                                <mat-icon [svgIcon]="'heroicons_solid:check'"
+                                          [matTooltip]="'Autres conditions temporaires'"></mat-icon>
+                            </div>
+                            <div class="flex flex-col lg:w-7/8">
+                                <div class="ml-6 leading-6">{{entrepriseCouverture.autresConditionsTemporaires}}</div>
+                            </div>
+                        </div>
+                        <!-- Décision et date -->
+                        <div class="flex flex-row">
+                            <div class="flex flex-col lg:w-1/8">
+                                <mat-icon [svgIcon]="'gavel'"
+                                          [matTooltip]="'Décision'"></mat-icon>
+                            </div>
+                            <div class="flex flex-col lg:w-7/8">
+                                <div class="ml-6 leading-6">{{entrepriseCouverture.decision}} - le {{entrepriseCouverture.dateDecision | date:'dd/MM/yyyy'}}</div>
+                            </div>
+                        </div>
+                        <!-- Motif de la décision -->
+                        <div class="flex flex-row" *ngIf="entrepriseCouverture.motifDecision">
+                            <div class="flex flex-col lg:w-1/8">
+                                <mat-icon [svgIcon]="'gavel'"
+                                          [matTooltip]="'Motif de la décision'"></mat-icon>
+                            </div>
+                            <div class="flex flex-col lg:w-7/8">
+                                <div class="ml-6 leading-6">{{entrepriseCouverture.motifDecision}}</div>
+                            </div>
+                        </div>
+                        <!-- Notre commentaire -->
+                        <div class="flex flex-row" *ngIf="entrepriseCouverture.notreCommentaire">
+                            <div class="flex flex-col lg:w-1/8">
+                                <mat-icon [svgIcon]="'heroicons_outline:annotation'"
+                                          [matTooltip]="'Notre Commentaire'"></mat-icon>
+                            </div>
+                            <div class="flex flex-col lg:w-7/8">
+                                <div class="ml-6 leading-6">{{entrepriseCouverture.notreCommentaire}}</div>
+                            </div>
+                        </div>
+                        <!-- Commentaire de l'arbitre -->
+                        <div class="flex flex-row" *ngIf="entrepriseCouverture.commentaireArbitre">
+                            <div class="flex flex-col lg:w-1/8">
+                                <mat-icon [svgIcon]="'heroicons_outline:annotation'"
+                                          [matTooltip]="'Commentaire de l\'arbitre'"></mat-icon>
+                            </div>
+                            <div class="flex flex-col lg:w-7/8">
+                                <div class="ml-6 leading-6">{{entrepriseCouverture.commentaireArbitre}}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</ng-container>
+<ng-template #noData>
+    <div class="flex flex-col pb-12 items-center justify-center h-full">
+        <div class="text-2xl">Aucune garantie dénommée demandée</div>
+    </div>
+</ng-template>

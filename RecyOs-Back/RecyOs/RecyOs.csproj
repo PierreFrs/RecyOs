@@ -1,0 +1,86 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <AssemblyVersion>0.2.7</AssemblyVersion>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+      <OutputPath>bin\Debug/net8.0/</OutputPath>
+      <Optimize>false</Optimize>
+      <DocumentationFile>bin\Debug\net8.0\net8.0\RecyOs.xml</DocumentationFile>
+      <NoWarn>1701;1702;1587;1591</NoWarn>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+	    <OutputPath>bin\Release/net8.0/</OutputPath>
+	      <Optimize>true</Optimize>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
+        <PackageReference Include="ClosedXML" Version="0.104.2" />
+        <PackageReference Include="coverlet.msbuild" Version="6.0.0">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Elmah.Io.AspNetCore" Version="5.2.79" />
+        <PackageReference Include="Elmah.Io.NLog" Version="5.3.54" />
+        <PackageReference Include="ExcelDataReader" Version="3.7.0" />
+         <PackageReference Include="MailKit" Version="4.10.0" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.11" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.11">
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+          <PrivateAssets>all</PrivateAssets>
+        </PackageReference>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="8.0.11" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="8.0.11" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.11" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Specification.Tests" Version="8.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.1" />
+        <PackageReference Include="NLog.Web.AspNetCore" Version="5.3.15" />
+        <PackageReference Include="Polly" Version="8.5.1" />
+        <PackageReference Include="PortaCapena.OdooJsonRpcClient" Version="1.0.20" />
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="7.1.0" />
+        <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="7.1.0" />
+        <PackageReference Include="System.CommandLine" Version="2.0.0-beta4.22272.1" />
+        <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.3.0" />
+        <PackageReference Include="System.Text.Encoding.CodePages" Version="8.0.0" />
+        <PackageReference Include="System.Text.Json" Version="8.0.5" />
+    </ItemGroup>
+
+    <ItemGroup>
+
+      <Folder Include="Cron\Startup\" />
+      <Folder Include="MKGT_DB\DTO" />
+      <Folder Include="ORM\DTO\pappers" />
+      <Folder Include="Services" />
+      <Folder Include="__pycache__\" />
+      <Folder Include="Engine\Modules\DashDoc\Mappers\" />
+
+      <Folder Include="Engine\Alerts\Services\" />
+
+      <Folder Include="Migrations\" />
+      <Folder Include="ORM\Models\" />
+      <Folder Include="ThirdPartyAPIs\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Include="appsettings.json" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Update="ORM\DTO\RestorePasswordDto.cs">
+        <DependentUpon>UserDto.cs</DependentUpon>
+      </Compile>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Remove="nlog.config" />
+      <Content Update="appsettings.json">
+        <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      </Content>
+    </ItemGroup>
+</Project>

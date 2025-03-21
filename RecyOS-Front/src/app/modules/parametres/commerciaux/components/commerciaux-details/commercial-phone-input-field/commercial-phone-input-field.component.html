@@ -1,0 +1,14 @@
+<mat-form-field class="w-full p-1">
+    <mat-label>{{ label }}</mat-label>
+    <input matInput
+           [appPhoneMask]
+           [type]="type"
+           [formControl]="control"
+           [attr.placeholder]="label"
+           [readonly]="readonly"
+    >
+    <mat-error *ngIf="control.invalid && control.touched">
+        <span *ngIf="control.errors?.required">{{ errorMessages?.['required'] }}</span>
+        <span *ngIf="control.errors?.pattern">{{ errorMessages?.['pattern'] }}</span>
+    </mat-error>
+</mat-form-field>

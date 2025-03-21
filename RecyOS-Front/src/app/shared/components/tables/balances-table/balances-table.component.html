@@ -1,0 +1,49 @@
+<div class="max-w-160">
+    <table
+        mat-table
+        [dataSource]="dataSource"
+        matSort
+        (matSortChange)="announceSortChange($event)"
+        aria-label="Tableau listant les montants dûs par le client aux différentes sociétés du groupe et triés par date, du plus ancien au plus récent">
+
+        <!-- Extraction Date Column -->
+        <ng-container matColumnDef="extractionDate">
+            <th
+                mat-header-cell
+                *matHeaderCellDef
+                mat-sort-header
+                sortActionDescription="Classer par date"
+            > Date </th>
+            <td mat-cell *matCellDef="let element"> {{ element.extractionDate | date: 'dd/MM/yy, HH:mm' }} </td>
+            <td mat-footer-cell *matFooterCellDef><span class="font-bold">Total :</span> {{ getTotal() | currency:'EUR':'symbol-narrow':'.2-2':'fr-FR' }}</td>
+        </ng-container>
+
+        <!-- Balance Owed Column -->
+        <ng-container matColumnDef="balanceOwed">
+            <th
+                mat-header-cell
+                *matHeaderCellDef
+                mat-sort-header
+                sortActionDescription="Classer par montant"
+            > Montant </th>
+            <td mat-cell *matCellDef="let element"> {{ element.balanceOwed | currency:'EUR':'symbol-narrow':'.2-2':'fr-FR' }} </td>
+            <td mat-footer-cell *matFooterCellDef></td>
+        </ng-container>
+
+        <!-- Societe Name Column -->
+        <ng-container matColumnDef="societeName">
+            <th
+                mat-header-cell
+                *matHeaderCellDef
+                mat-sort-header
+                sortActionDescription="Classer par société"
+            > Société </th>
+            <td mat-cell *matCellDef="let element"> {{ element.societeName }} </td>
+            <td mat-footer-cell *matFooterCellDef></td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        <tr mat-footer-row *matFooterRowDef="displayedColumns"></tr>
+    </table>
+</div>

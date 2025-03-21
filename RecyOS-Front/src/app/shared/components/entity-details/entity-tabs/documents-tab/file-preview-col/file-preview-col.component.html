@@ -1,0 +1,33 @@
+<ng-container class="flex flex-col flex-auto w-full py-10" *ngIf="selectedDocument">
+    <mat-card class="shadow-none">
+        <mat-card-header>
+            <mat-card-title class="mb-4 mx-6 text-2xl font-extrabold tracking-tight leading-none">
+                    Document : <span class="font-semibold">{{removeGuidFromFilename(selectedDocument.fileName)}}</span>
+            </mat-card-title>
+            <mat-card-subtitle class="mb-4 mx-6 text-xl font-extrabold tracking-tight leading-none">
+                Type : <span class="font-semibold">{{getSelectedLabel()}}</span>
+            </mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+            <pdf-viewer *ngIf="selectedDocument"
+                        [documentId]="selectedDocument.id"
+                        [selectedEntity]="selectedEntity"
+                        data-cy="pdf-viewer"
+            ></pdf-viewer>
+        </mat-card-content>
+        <mat-card-actions>
+            <p *ngIf="!selectedDocument">It seems your browser doesn't support displaying PDFs. You can <a href="{{selectedDocument.fileLocation}}" target="_blank">download the PDF</a> to view it.</p>
+        </mat-card-actions>
+        <mat-card-content>
+            <p class="font-bold">Détails du document :</p>
+            <mat-list>
+                <mat-list-item>
+                    Créé le <span class="font-bold">{{ selectedDocument.createDate | date:'short':'+0100':'fr-FR' }}</span>
+                    par <span class="font-bold">{{ selectedDocument.createdBy }}</span>.</mat-list-item>
+                <mat-list-item *ngIf="selectedDocument.updatedAt || selectedDocument.updatedBy">
+                    Dernière mise à jour le <span class="font-bold">{{ selectedDocument.updatedAt | date:'short':'+0100':'fr-FR' }}</span>
+                    par <span class="font-bold">{{ selectedDocument.updatedBy }}</span>.</mat-list-item>
+            </mat-list>
+        </mat-card-content>
+    </mat-card>
+</ng-container>

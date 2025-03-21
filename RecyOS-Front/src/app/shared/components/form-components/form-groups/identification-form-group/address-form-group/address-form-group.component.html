@@ -1,0 +1,113 @@
+<div [formGroup]="addressFormGroup">
+    <div class="flex">
+        <!-- Titre -->
+        <app-select-field
+            *ngIf="entityStatus === 'particulier'"
+            class="w-1/3 h-24 mr-2"
+            label="Titre"
+            [control]="titreControl"
+            [errorMessage]="'Le titre du client est obligatoire'"
+            [options]="[
+                { value: 'M.', label: 'M.' },
+                { value: 'Mme', label: 'Mme' }
+            ]"
+            data-cy="titre"
+        >
+        </app-select-field>
+
+        <!-- Nom -->
+        <app-input-field
+            [ngClass]="{
+                'w-full': entityStatus === 'professional',
+                'w-1/3 mr-2': entityStatus === 'particulier'
+            }"
+            label="Nom"
+            [type]="'text'"
+            formControlName="nom"
+            [control]="nomControl"
+            [errorMessages]="{ required: 'Le nom du client est obligatoire' }"
+            data-cy="nom"
+        >
+        </app-input-field>
+        <!-- Prénom -->
+        <app-input-field
+            *ngIf="entityStatus === 'particulier'"
+            class="w-1/3 h-24"
+            label="Prénom"
+            [type]="'text'"
+            formControlName="prenom"
+            [control]="prenomControl"
+            [errorMessages]="{
+                required: 'Le prénom du client est obligatoire'
+            }"
+            data-cy="prenom"
+        >
+        </app-input-field>
+    </div>
+    <!-- Adresses -->
+    <div class="flex">
+        <app-input-field
+            class="w-1/3 mr-2"
+            label="Adresse ligne 1"
+            [type]="'text'"
+            formControlName="adresseFacturation1"
+            [control]="adresseFacturation1Control"
+            [errorMessages]="{
+                required: 'Il faut minimum une ligne d\'adresse'
+            }"
+            data-cy="adresseFacturation1"
+        >
+        </app-input-field>
+        <app-input-field
+            class="w-1/3 mr-2"
+            label="Adresse ligne 2"
+            [type]="'text'"
+            formControlName="adresseFacturation2"
+            [control]="adresseFacturation2Control"
+            data-cy="adresseFacturation2"
+        >
+        </app-input-field>
+        <app-input-field
+            class="w-1/3"
+            label="Adresse ligne 3"
+            [type]="'text'"
+            formControlName="adresseFacturation3"
+            [control]="adresseFacturation3Control"
+            data-cy="adresseFacturation3"
+        >
+        </app-input-field>
+    </div>
+    <!-- CP, Ville, Pays-->
+    <div class="flex">
+        <app-input-field
+            class="w-1/3 mr-2"
+            label="Code postal"
+            [type]="'text'"
+            formControlName="codePostalFacturation"
+            [control]="codePostalFacturationControl"
+            [errorMessages]="{ required: 'Le code postal est obligatoire' }"
+            data-cy="codePostalFacturation"
+        >
+        </app-input-field>
+        <app-input-field
+            class="w-1/3 mr-2"
+            label="Ville"
+            [type]="'text'"
+            formControlName="villeFacturation"
+            [control]="villeFacturationControl"
+            [errorMessages]="{ required: 'La ville est obligatoire' }"
+            data-cy="villeFacturation"
+        >
+        </app-input-field>
+        <app-input-field
+            class="w-1/3"
+            label="Pays"
+            [type]="'text'"
+            formControlName="paysFacturation"
+            [control]="paysFacturationControl"
+            [errorMessages]="{ required: 'Le pays est obligatoire' }"
+            data-cy="paysFacturation"
+        >
+        </app-input-field>
+    </div>
+</div>

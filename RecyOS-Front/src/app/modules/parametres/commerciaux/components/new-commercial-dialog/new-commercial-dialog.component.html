@@ -1,0 +1,92 @@
+<h1 class="text-4xl font-extrabold tracking-tight mb-4" mat-dialog-title>
+    Ajouter un nouveau-elle commercial-e
+</h1>
+<div mat-dialog-content>
+    <form
+        *ngIf="!isCommercialCreated"
+        [formGroup]="commercialForm"
+        (ngSubmit)="createCommercial()"
+    >
+        <app-select-field
+            label="Utilisateur"
+            [control]="userIdControl"
+            [options]="userOptions"
+            [errorMessages]="{ required: 'L\'utilisateur est requis' }"
+        ></app-select-field>
+
+        <app-input-field
+            label="Nom d'utilisateur MKGT"
+            type="text"
+            [control]="usernameControl"
+            [errorMessages]="{
+                required: 'Le nom d\'utilisateur MKGT est requis'
+            }"
+        >
+        </app-input-field>
+
+        <app-commercial-phone-input-field
+            label="Téléphone"
+            [type]="'text'"
+            [control]="phoneControl"
+            [errorMessages]="{
+                required: 'Le numéro de téléphone est requis',
+                pattern:
+                    'Le numéro de téléphone doit être composé de 10 chiffres'
+            }"
+        >
+        </app-commercial-phone-input-field>
+
+        <app-input-field
+            label="Identifiant MKGT"
+            type="text"
+            [control]="codeMkgtControl"
+            [errorMessages]="{
+                required: 'L\'identifiant MKGT est requis',
+                minlength:
+                    'L\'identifiant MKGT doit être composé de deux caractères',
+                maxlength:
+                    'L\'identifiant MKGT doit être composé de deux caractères'
+            }"
+        >
+        </app-input-field>
+
+        <app-input-field
+            label="Identifiant HubSpot"
+            type="text"
+            [control]="idHubSpotControl"
+            [errorMessages]="{
+                minlength:
+                    'L\'identifiant HubSpot doit être composé de neuf caractères',
+                maxlength:
+                    'L\'identifiant HubSpot doit être composé de neuf caractères'
+            }"
+        >
+        </app-input-field>
+
+        <button
+            mat-raised-button
+            color="primary"
+            type="submit"
+            [disabled]="commercialForm.invalid"
+        >
+            Ajouter le/la commercial-e
+        </button>
+    </form>
+
+    <div
+        *ngIf="isCommercialCreated"
+        class="flex flex-col justify-center items-center gap-4"
+    >
+        <h2 class="text-2xl font-extrabold tracking-tight">
+            Le/la commercial-e a été créé-e avec succès !
+        </h2>
+        <button
+            mat-raised-button
+            color="primary"
+            class="w-fit"
+            (click)="closeDialog()"
+        >
+            Fermer
+        </button>
+    </div>
+</div>

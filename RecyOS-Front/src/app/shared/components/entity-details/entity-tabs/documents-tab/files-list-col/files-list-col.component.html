@@ -1,0 +1,27 @@
+<ng-container class="flex flex-col flex-auto w-full py-10">
+    <mat-card class="shadow-none">
+        <mat-card-header>
+            <mat-card-title class="mb-8 mx-6 text-2xl font-extrabold tracking-tight leading-none mat-h2">Documents par type : <span class="font-semibold">{{getSelectedLabel()}}</span></mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+            <mat-list>
+                <div *ngFor="let doc of filteredDocuments">
+                    <mat-list-item [ngClass]="{'bg-blue-300': activeFile === doc, 'hover:bg-accent-300': activeFile !== doc}"
+                                   (click)="selectDocument(doc)"
+                                   (keydown)="selectDocument(doc)"
+                                   class="inventory-grid grid items-center py-3 px-6 cursor-pointer rounded-md">{{ doc.createDate | date: 'dd/MM/yy, HH:mm'  }} -
+                        <span class="font-bold">{{ removeGuidFromFilename(doc.fileName) }}</span>
+                    </mat-list-item>
+                    <mat-divider></mat-divider>
+                </div>
+            </mat-list>
+            <app-add-button
+                [disabled]="!userCanCreatePdf"
+                [icon]="'add'"
+                (addButtonClick)="openUploadDialog()"
+                data-cy="add-pdf-button"
+            >
+            </app-add-button>
+        </mat-card-content>
+    </mat-card>
+</ng-container>

@@ -1,0 +1,27 @@
+<h1 class="text-4xl font-extrabold tracking-tight" mat-dialog-title>Actualiser client depuis Pappers</h1>
+<div mat-dialog-content>
+    <mat-form-field class="w-full" appearance="fill">
+        <input  [autocomplete]="'off'"
+                [placeholder]="'Numéro de Siret'"
+                [formControl]="updateEtablissementControl"
+                matInput>
+        <mat-error *ngIf="updateEtablissementControl.hasError('required')">
+            Le SIRET du client est requis pour actualiser le client.
+        </mat-error>
+        <mat-error *ngIf="updateEtablissementControl.hasError('customerNotFound')">
+            Le SIRET N'est pas trouvé dans le fichier client
+        </mat-error>
+        <mat-error *ngIf="updateEtablissementControl.hasError('invalidSiret')">
+            Le code SIRET doit être un numéro valide.
+        </mat-error>
+        <mat-hint *ngIf="updateEtablissementControl.valid" style="color: green;">
+            Le siret client est valide.
+        </mat-hint>
+    </mat-form-field>
+</div>
+<div mat-dialog-actions class="flex flex-row items-center justify-between">
+    <div class="flex items-center">
+        <button mat-button (click)="onCancel()">Annuler</button>
+    </div>
+    <button mat-flat-button (click)="onRefresh()" color="primary" [disabled]="!isValid">Actualiser</button>
+</div>

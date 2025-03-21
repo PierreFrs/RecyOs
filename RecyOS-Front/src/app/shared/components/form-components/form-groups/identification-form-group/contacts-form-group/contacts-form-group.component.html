@@ -1,0 +1,89 @@
+<div [formGroup]="contactsFormGroup" class="grid grid-cols-12 gap-2">
+    <!-- Left Column -->
+    <div class="col-span-6 flex flex-col">
+        <!-- Contact Facturation -->
+        <ng-container *ngIf="contactFacturationControl && entityStatus === 'professional'">
+            <app-input-field
+                label="Contact facturation"
+                [type]="'text'"
+                [control]="contactFacturationControl"
+                data-cy="contactFacturation"
+            >
+            </app-input-field>
+        </ng-container>
+        <!-- E-Mail Facturation -->
+        <app-input-field
+            label="E-Mail facturation"
+            [type]="'email'"
+            [control]="emailFacturationControl"
+            [errorMessages]="{
+        required: 'L\'adresse Email est requise pour l\'envoi des factures',
+        email: 'Merci de saisir une adresse Email valide pour l\'envoi des factures'
+      }"
+            data-cy="emailFacturation"
+        >
+        </app-input-field>
+        <!-- Telephone Facturation -->
+        <app-phone-input-field
+            label="Téléphone facturation"
+            [type]="'text'"
+            [control]="telephoneFacturationControl"
+            [errorMessages]="{
+        required: 'Le numéro de téléphone est requis pour contacter le client'
+      }"
+            [selectedEntity]="selectedEntity"
+            data-cy="telephoneFacturation"
+        >
+        </app-phone-input-field>
+        <!-- Portable Facturation -->
+        <app-phone-input-field
+            label="Portable facturation"
+            [type]="'text'"
+            [control]="portableFacturationControl"
+            [selectedEntity]="selectedEntity"
+            data-cy="portableFacturation"
+        >
+        </app-phone-input-field>
+    </div>
+
+    <!-- Right Column -->
+    <div class="col-span-6 flex flex-col">
+        <!-- Contact Alternatif -->
+        <app-input-field
+            label="Contact alternatif"
+            [type]="'text'"
+            [control]="contactAlternatifControl"
+            data-cy="contactAlternatif"
+        >
+        </app-input-field>
+        <!-- E-Mails Alternatifs -->
+        <app-input-field
+            label="E-Mails alternatifs"
+            [type]="'email'"
+            [control]="emailAlternatifControl"
+            [errorMessages]="{
+        email: 'Merci de saisir une adresse email valide ou une liste d\'emails séparées par des points-virgules, sans espace'
+      }"
+            data-cy="emailAlternatif"
+        >
+        </app-input-field>
+        <!-- Telephone Alternatif -->
+        <app-phone-input-field
+            label="Téléphone alternatif"
+            [type]="'text'"
+            [control]="telephoneAlternatifControl"
+            [selectedEntity]="selectedEntity"
+            data-cy="telephoneAlternatif"
+        >
+        </app-phone-input-field>
+        <!-- Portable Alternatif -->
+        <app-phone-input-field
+            label="Portable alternatif"
+            [type]="'text'"
+            [control]="portableAlternatifControl"
+            [selectedEntity]="selectedEntity"
+            data-cy="portableAlternatif"
+        >
+        </app-phone-input-field>
+    </div>
+</div>

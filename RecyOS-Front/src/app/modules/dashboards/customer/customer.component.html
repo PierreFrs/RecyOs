@@ -1,0 +1,123 @@
+<div class="flex flex-col flex-auto w-full">
+    <div class="flex flex-wrap w-full max-w-screen-xl mx-auto p-6 md:p-8">
+        <!-- Title and action buttons -->
+        <div class="flex items-center justify-between w-full">
+            <div>
+                <div class="text-3xl font-semibold tracking-tight leading-8"
+                     data-cy="client-dashboard-title"
+                >Dashboard client</div>
+                <div class="font-medium tracking-tight text-secondary">Supervision portefeuille client, vérifier la qualitée des données</div>
+            </div>
+        </div>
+        <!-- END Title and action buttons -->
+        <!-- Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 min-w-0 mt-8">
+            <!-- Nb clients -->
+            <app-dashboard-base-client-card
+                [title]="'Nombre de clients'"
+                [number]="dashboardCustomer.nbClients"
+                [subtitle]="'Clients'"
+                [numberClass]="'text-7xl sm:text-8xl font-bold tracking-tight leading-none text-blue-500'"
+                [textClass]="'text-lg font-medium text-blue-600 dark:text-blue-500'"
+                [tooltip]="'Afficher liste'"
+                [icon]="'heroicons_solid:view-list'"
+                (displayListClick)="afficherListeClients()">
+            </app-dashboard-base-client-card>
+            <!-- END Nb clients -->
+            <!-- Clients radiés -->
+            <app-dashboard-base-client-card
+                [title]="'Clients radiés'"
+                [number]="dashboardCustomer.nbRadies"
+                [subtitle]="'Clients'"
+                [numberClass]="'text-7xl sm:text-8xl font-bold tracking-tight leading-none text-red-500'"
+                [textClass]="'text-lg font-medium text-red-600 dark:text-red-500'"
+                [tooltip]="'Afficher liste'"
+                [icon]="'heroicons_solid:view-list'"
+                (displayListClick)="afficherClientsRadies()">
+            </app-dashboard-base-client-card>
+            <!-- END Clients radiés -->
+            <!-- Clients sans e-mail facturation-->
+            <app-dashboard-base-client-card
+                [title]="'Sans e-mail facturation'"
+                [number]="dashboardCustomer.nbErrMail"
+                [subtitle]="'Clients'"
+                [numberClass]="'text-7xl sm:text-8xl font-bold tracking-tight leading-none text-red-500'"
+                [textClass]="'text-lg font-medium text-red-600 dark:text-red-500'"
+                [tooltip]="'Afficher liste'"
+                [icon]="'heroicons_solid:view-list'"
+                (displayListClick)="afficherClientsBadMail()">
+            </app-dashboard-base-client-card>
+            <!-- END Clients sans e-mail facturation -->
+            <!-- Clients sans téléphone facturation-->
+            <app-dashboard-base-client-card
+                [title]="'Sans téléphone facturation'"
+                [number]="dashboardCustomer.nbErrTel"
+                [subtitle]="'Clients'"
+                [numberClass]="'text-7xl sm:text-8xl font-bold tracking-tight leading-none text-red-500'"
+                [textClass]="'text-lg font-medium text-red-600 dark:text-red-500'"
+                [tooltip]="'Afficher liste'"
+                [icon]="'heroicons_solid:view-list'"
+                (displayListClick)="afficherClientsBadTel()">
+            </app-dashboard-base-client-card>
+            <!-- END Clients sans téléphone facturation -->
+            <!-- Clients affacturage -->
+            <app-dashboard-base-client-card
+                [title]="'Clients FACTOR'"
+                [number]="dashboardCustomer.nbFactor"
+                [subtitle]="'Clients'"
+                [numberClass]="'text-7xl sm:text-8xl font-bold tracking-tight leading-none text-amber-500'"
+                [textClass]="'text-lg font-medium text-amber-600 dark:text-amber-500'"
+                [tooltip]="'Afficher liste'"
+                [icon]="'heroicons_solid:view-list'"
+                [additionalText]="'Non couvert:'"
+                [additionalNumber]="dashboardCustomer.nbFactorNc"
+                (displayListClick)="afficherClientsFactor()">
+            </app-dashboard-base-client-card>
+            <!-- END Clients affacturage -->
+            <!-- Demandes de couverture -->
+            <app-dashboard-cover-client-card
+                [title]="'Demandes de couverture'"
+                [number]="dashboardCustomer.nbDemCouv"
+                [subtitle]="'Demandes'"
+                [numberClass]="'text-7xl sm:text-8xl font-bold tracking-tight leading-none text-green-500'"
+                [textClass]="'text-lg font-medium text-green-600 dark:text-green-500'"
+                [menuIcon]="'heroicons_solid:dots-vertical'"
+                [additionalText]="'Refusées:'"
+                [additionalNumber]="dashboardCustomer.nbDemCouvRefus"
+                (demandes)="afficherDemandesCouverture()"
+                (demandesAccordees)="afficherDemandesCouvertureAccordees()"
+                (demandesRefusees)="afficherDemandesCouvertureRefusees()">
+            </app-dashboard-cover-client-card>
+            <!-- END Demandes de couverture -->
+            <!-- ND Cover -->
+            <app-dashboard-cover-client-card
+                [title]="'ND Cover'"
+                [number]="dashboardCustomer.nbDemNDCov"
+                [subtitle]="'Demandes'"
+                [numberClass]="'text-7xl sm:text-8xl font-bold tracking-tight leading-none text-green-500'"
+                [textClass]="'text-lg font-medium text-green-600 dark:text-green-500'"
+                [menuIcon]="'heroicons_solid:dots-vertical'"
+                [additionalText]="'Refusées:'"
+                [additionalNumber]="dashboardCustomer.nbDemNDCovRefus"
+                (demandes)="afficherDemandesNDCover()"
+                (demandesAccordees)="afficherDemandesNDCoverAccordees()"
+                (demandesRefusees)="afficherDemandesNDCoverRefusees()">
+            ></app-dashboard-cover-client-card>
+            <!-- END ND Cover -->
+            <!-- Clients sans commerciaux -->
+            <app-dashboard-base-client-card
+                [title]="'Clients sans commerciaux'"
+                [number]="dashboardCustomer.nbCliSansCom"
+                [subtitle]="'Clients'"
+                [numberClass]="'text-7xl sm:text-8xl font-bold tracking-tight leading-none text-red-500'"
+                [textClass]="'text-lg font-medium text-red-600 dark:text-green-500'"
+                [tooltip]="'Afficher liste'"
+                [icon]="'heroicons_solid:view-list'"
+                [additionalText]="'Non suivis:'"
+                (displayListClick)="afficherClientsSansCommerciaux()">
+                ></app-dashboard-base-client-card>
+            <!-- END Clients sans commerciaux -->
+        </div>
+        <!-- END Cards -->
+    </div>
+</div>

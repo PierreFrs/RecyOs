@@ -1,0 +1,12 @@
+<h1 mat-dialog-title>Etes-vous sûr.e de vouloir supprimer ce document ?</h1>
+
+<mat-dialog-actions class="flex flex-col justify-center items-center">
+    <button mat-button (click)="onNoClick()" class="mb-1">Annuler</button>
+    <button
+        mat-raised-button
+        color="warn"
+        (click)="deletePDF()"
+        class="hover:opacity-95"
+        data-cy="confirm-delete"
+    >Supprimer le PDF</button>
+</mat-dialog-actions>

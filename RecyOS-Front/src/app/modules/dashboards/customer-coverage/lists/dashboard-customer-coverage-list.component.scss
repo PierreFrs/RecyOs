@@ -1,0 +1,23 @@
+.coverage-list-grid {
+    grid-template-columns: 48px auto 110px;
+
+    @screen sm {
+        grid-template-columns: 48px 110px auto;
+    }
+
+    @screen md {
+        grid-template-columns: 48px 100px auto 100px 120px 90px;
+    }
+
+    @screen lg {
+        grid-template-columns: 48px 100px auto 100px 120px 90px 60px;
+    }
+
+    @screen xl {
+        grid-template-columns: 48px 100px auto 100px 120px 90px 60px 120px;
+    }
+
+    @screen xxl {
+        grid-template-columns: 48px 100px auto 100px 120px 90px 60px 120px;
+    }
+}

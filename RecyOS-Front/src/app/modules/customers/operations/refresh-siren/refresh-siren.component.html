@@ -1,0 +1,10 @@
+<div class="flex flex-wrap">
+    <app-operations-card
+        [cardIcon]="'heroicons_outline:refresh'"
+        [title]="'Actualiser un client'"
+        [description]="'Actualise les données du client pour un siret donné'"
+        [actionLabel]="'Actualiser'"
+        [actionType]="'update'"
+        (actionTriggered)="RefreshSirenBySiret()"
+    ></app-operations-card>
+</div>

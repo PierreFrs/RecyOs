@@ -1,0 +1,252 @@
+<ng-container *ngIf="entrepriseNDCover; else noData">
+    <div class="flex flex-col sm:flex-row pl-16">
+        <div class="flex flex-auto flex-wrap">
+            <div class="flex flex-col w-full sm:pl-1">
+                <div class="mt-3 text-4xl font-bold truncate">ND Cover</div>
+                <div class="flex sm:items-start">
+                    <!--Colonne identification client-->
+                    <div class="flex flex-col lg:w-1/3 sm:pl-1">
+                        <div class="mt-3 mb-2 text-2xl font-bold truncate">Identification</div>
+                        <!-- SIREN -->
+                        <div class="flex flex-row">
+                            <div class="flex flex-col lg:w-1/8">
+                                <mat-icon [svgIcon]="'heroicons_outline:office-building'"
+                                          [matTooltip]="'Entreprise - SIREN'"></mat-icon>
+                            </div>
+                            <div class="flex flex-col lg:w-7/8">
+                                <div class="ml-6 leading-6">{{entrepriseNDCover.raisonSociale}} - {{entrepriseNDCover.typeIdentifiant}} : {{ entrepriseNDCover.siren | formatSiren:entrepriseNDCover.typeIdentifiant }}
+                                    <ng-container *ngIf="entrepriseNDCover.statutEntreprise == 'Actif'">
+                                        <mat-icon
+                                            class="icon-size-5 text-green-600"
+                                            [svgIcon]="'heroicons_solid:badge-check'"
+                                            [matTooltip]="'Entreprise Active'"></mat-icon>
+                                    </ng-container>
+                                    <ng-container *ngIf="entrepriseNDCover.statutEntreprise == 'Clôturé'">
+                                        <mat-icon
+                                            class="icon-size-5 text-red-600"
+                                            [svgIcon]="'heroicons_solid:x-circle'"
+                                            [matTooltip]="'Entreprise Cessée'"></mat-icon>
+                                    </ng-container>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Référence Client -->
+                        <div class="flex flex-row" *ngIf="entrepriseNDCover.referenceClient">
+                            <div class="flex flex-col lg:w-1/8">
+                                <mat-icon [svgIcon]="'heroicons_outline:identification'"
+                                          [matTooltip]="'Référence Client'"></mat-icon>
+                            </div>
+                            <div class="flex flex-col lg:w-7/8">
+                                <div class="ml-6 leading-6">{{entrepriseNDCover.referenceClient}}</div>
+                            </div>
+                        </div>
+                        <!-- Identifiant de couverture -->
+                        <div class="flex flex-row">
+                            <div class="flex flex-col lg:w-1/8">
+                                <mat-icon [svgIcon]="'heroicons_outline:identification'"
+                                          [matTooltip]="'Identifiant de couverture'"></mat-icon>
+                            </div>
+                            <div class="flex flex-col lg:w-7/8">
+                                <div class="ml-6 leading-6">{{entrepriseNDCover.coverId }}</div>
+                            </div>
+                        </div>
+                        <!-- Identifiant Euler Hermes -->
+                        <div class="flex flex-row">
+                            <div class="flex flex-col lg:w-1/8">
+                                <mat-icon [svgIcon]="'heroicons_outline:identification'"
+                                          [matTooltip]="'Identifiant Euler Hermes'"></mat-icon>
+                            </div>
+                            <div class="flex flex-col lg:w-7/8">
+                                <div class="ml-6 leading-6">{{entrepriseNDCover.ehId}}</div>
+                            </div>
+                        </div>
+                        <!-- Adresse Client -->
+                        <div class="flex flex-row">
+                            <div class="flex flex-col lg:w-1/8">
+                                <mat-icon [svgIcon]="'mat_solid:location_on'"
+                                          [matTooltip]="'Adresse Client'"></mat-icon>
+                            </div>
+                            <div class="flex flex-col lg:w-7/8">
+                                <div class="ml-6 leading-6">
+                                    {{entrepriseNDCover.nomRue}}<br>
+                                    {{entrepriseNDCover.codePostal}},
+                                    {{entrepriseNDCover.ville}}<br>
+                                    {{entrepriseNDCover.pays}}
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Forme juridique -->
+                        <div class="flex flex-row">
+                            <div class="flex flex-col lg:w-1/8">
+                                <mat-icon [svgIcon]="'heroicons_outline:newspaper'"
+                                          [matTooltip]="'Forme juridique'"></mat-icon>
+                            </div>
+                            <div class="flex flex-col lg:w-7/8">
+                                <div class="ml-6 leading-6">
+                                    {{entrepriseNDCover.formeJuridiqueCode}}
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Secteur d'activité -->
+                        <div class="flex flex-row">
+                            <div class="flex flex-col lg:w-1/8">
+                                <mat-icon [svgIcon]="'work'"
+                                          [matTooltip]="'Secteur d\'activité'"></mat-icon>
+                            </div>
+                            <div class="flex flex-col lg:w-7/8">
+                                <div class="ml-6 leading-6">
+                                    {{entrepriseNDCover.secteurActivite}}
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Numéro de Contrat primaire -->
+                        <div class="flex flex-row">
+                            <div class="flex flex-col lg:w-1/8">
+                                <mat-icon [svgIcon]="'heroicons_outline:newspaper'"
+                                          [matTooltip]="'Numéro de Contrat primaire'"></mat-icon>
+                            </div>
+                            <div class="flex flex-col lg:w-7/8">
+                                <div class="ml-6 leading-6">{{entrepriseNDCover.numeroContratPrimaire}}</div>
+                            </div>
+                        </div>
+                        <!-- Numéro de Contrat extension -->
+                        <div class="flex flex-row" *ngIf="entrepriseNDCover.numeroContratExtension">
+                            <div class="flex flex-col lg:w-1/8">
+                                <mat-icon [svgIcon]="'heroicons_outline:newspaper'"
+                                          [matTooltip]="'Numéro de Contrat de l\'extension'"></mat-icon>
+                            </div>
+                            <div class="flex flex-col lg:w-7/8">
+                                <div class="ml-6 leading-6">{{entrepriseNDCover.numeroContratExtension}}</div>
+                            </div>
+                        </div>
+                        <!-- Nom de la police -->
+                        <div class="flex flex-row">
+                            <div class="flex flex-col lg:w-1/8">
+                                <mat-icon [svgIcon]="'heroicons_outline:newspaper'"
+                                          [matTooltip]="'Nom de la police'"></mat-icon>
+                            </div>
+                            <div class="flex flex-col lg:w-7/8">
+                                <div class="ml-6 leading-6">{{entrepriseNDCover.nomPolice}}</div>
+                            </div>
+                        </div>
+                        <!-- Date de l'extraction -->
+                        <div class="flex flex-row">
+                            <div class="flex flex-col lg:w-1/8">
+                                <mat-icon [svgIcon]="'heroicons_outline:calendar'"
+                                          [matTooltip]="'Date de l\'extraction'"></mat-icon>
+                            </div>
+                            <div class="flex flex-col lg:w-7/8">
+                                <div class="ml-6 leading-6">{{entrepriseNDCover.dateExtraction | date: 'dd/MM/yyyy'}}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--Colonne demande-->
+                    <div class="flex flex-col lg:w-1/3 sm:pl-1">
+                        <div class="mt-3 mb-2 text-2xl font-bold truncate">Demande</div>
+                        <!-- Temps de réponse -->
+                        <div class="flex flex-row">
+                            <div class="flex flex-col lg:w-1/8">
+                                <mat-icon
+                                        [svgIcon]="'heroicons_outline:calendar'"
+                                        [matTooltip]="'Délai de paiement spécifique'"
+                                ></mat-icon>
+                            </div>
+                            <div class="flex flex-col lg:w-7/8">
+                                <div class="ml-6 leading-6">{{entrepriseNDCover.tempsReponse}} jours</div>
+                            </div>
+                        </div>
+                        <!-- Statut -->
+                        <div class="flex flex-row">
+                            <div class="flex flex-col lg:w-1/8">
+                                <mat-icon
+                                        [svgIcon]="'feather:umbrella'"
+                                        [matTooltip]="'Statut'"
+                                ></mat-icon>
+                            </div>
+                            <div class="flex flex-col lg:w-7/8">
+                                <div class="ml-6 leading-6">{{entrepriseNDCover.statut}}</div>
+                            </div>
+                        </div>
+                        <!-- Date de changement de position -->
+                        <div class="flex flex-row">
+                            <div class="flex flex-col lg:w-1/8">
+                                <mat-icon
+                                        [svgIcon]="'heroicons_outline:calendar'"
+                                        [matTooltip]="'Date de changement de position'"
+                                ></mat-icon>
+                            </div>
+                            <div class="flex flex-col lg:w-7/8">
+                                <div class="ml-6 leading-6">{{entrepriseNDCover.dateChangementPosition | date: 'dd/MM/yyyy'}}</div>
+                            </div>
+                        </div>
+                        <!-- Date de la suppression -->
+                        <div class="flex flex-row" *ngIf="entrepriseNDCover.dateSuppression">
+                            <div class="flex flex-col lg:w-1/8">
+                                <mat-icon
+                                        [svgIcon]="'heroicons_outline:calendar'"
+                                        [matTooltip]="'Date de la suppression'"
+                                ></mat-icon>
+                            </div>
+                            <div class="flex flex-col lg:w-7/8">
+                                <div class="ml-6 leading-6">{{entrepriseNDCover.dateSuppression | date: 'dd/MM/yyyy'}}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Colonne renouvellement -->
+                    <div class="flex flex-col lg:w-1/3 sm:pr-1">
+                        <div class="mt-3 mb-2 text-2xl font-bold truncate">Réponse</div>
+                        <!-- Période de renouvellement ouverte ? -->
+                        <div class="flex flex-row">
+                            <div class="flex flex-col lg:w-1/8">
+                                <mat-icon
+                                        [svgIcon]="'heroicons_solid:question-mark-circle'"
+                                        [matTooltip]="'Période de renouvellement ouverte ?'"
+                                ></mat-icon>
+                            </div>
+                            <div class="flex flex-col lg:w-7/8">
+                                <div class="ml-6 leading-6">{{entrepriseNDCover.periodeRenouvellementOuverte}}</div>
+                            </div>
+                        </div>
+                        <!-- Sera renouvelé ? -->
+                        <div class="flex flex-row" *ngIf="entrepriseNDCover.seraRenouvele">
+                            <div class="flex flex-col lg:w-1/8">
+                                <mat-icon [svgIcon]="'heroicons_solid:question-mark-circle'"
+                                          [matTooltip]="'Montant accordé'"></mat-icon>
+                            </div>
+                            <div class="flex flex-col lg:w-7/8">
+                                <div class="ml-6 leading-6">{{entrepriseNDCover.seraRenouvele}}</div>
+                            </div>
+                        </div>
+                        <!-- Date de renouvellement prévue -->
+                        <div class="flex flex-row" *ngIf="entrepriseNDCover.dateRenouvellementPrevue">
+                            <div class="flex flex-col lg:w-1/8">
+                                <mat-icon
+                                        [svgIcon]="'heroicons_outline:calendar'"
+                                        [matTooltip]="'Type de garantie'"></mat-icon>
+                            </div>
+                            <div class="flex flex-col lg:w-7/8">
+                                <div class="ml-6 leading-6">{{entrepriseNDCover.dateRenouvellementPrevue | date: 'dd/MM/yyyy'}}</div>
+                            </div>
+                        </div>
+                        <!-- Date d'expiration -->
+                        <div class="flex flex-row" *ngIf="entrepriseNDCover.dateExpiration">
+                            <div class="flex flex-col lg:w-1/8">
+                                <mat-icon [svgIcon]="'heroicons_outline:calendar'"
+                                          [matTooltip]="'Type de la réponse'"></mat-icon>
+                            </div>
+                            <div class="flex flex-col lg:w-7/8">
+                                <div class="ml-6 leading-6">{{entrepriseNDCover.dateExpiration}}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</ng-container>
+<ng-template #noData>
+    <div class="flex flex-col items-center justify-center h-full">
+        <mat-icon [svgIcon]="'heroicons_outline:search'" class="text-6xl"></mat-icon>
+        <div class="text-2xl">Aucune donnée sur la couverture d'entreprise disponible</div>
+    </div>
+</ng-template>
