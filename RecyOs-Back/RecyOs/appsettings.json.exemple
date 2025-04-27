@@ -49,10 +49,10 @@
   },
 
   "Odoo": {
-   "Url": "https://sipco.odoo.com",
-   "Db": "recyos",
-   "Username": "b.rollin@recygroup.fr",
-   "Password": "Token"
+   "Url": "",
+   "Db": "",
+   "Username": "",
+   "Password": ""
   },
 
   "HubSpot": {
@@ -75,8 +75,8 @@
       "UploadsFolder": ".\\Uploads",
       "PdfFolder": ".\\PDF"
   },"Dashdoc": {
-    "Token": "44f480d4aab023fcd670346dbdebc4b465207957",
-    "EndPoint": "https://sandbox.dashdoc.eu/api/v4/"
+    "Token": "",
+    "EndPoint": ""
   },
 
   "CoverPolicies": {
